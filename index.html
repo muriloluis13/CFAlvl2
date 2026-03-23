@@ -41,8 +41,8 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg-prima
 .sidebar-logo span{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);display:block;margin-top:2px}
 
 /* Theme toggle */
-.theme-toggle{width:38px;height:38px;border-radius:10px;background:var(--bg-tertiary);border:1px solid var(--border-color);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--transition);flex-shrink:0}
-.theme-toggle:hover{border-color:var(--text-muted);transform:scale(1.05)}
+.sidebar .theme-toggle{width:38px;height:38px;border-radius:10px;background:var(--bg-tertiary);border:1px solid var(--border-color);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--transition);flex-shrink:0}
+.sidebar .theme-toggle:hover{border-color:var(--text-muted);transform:scale(1.05)}
 .theme-toggle svg{width:18px;height:18px;stroke:var(--text-secondary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .theme-toggle .sun{display:none}
 .theme-toggle .moon{display:block}
@@ -155,7 +155,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg-prima
 .peek-check-btn.is-checked{background:var(--active-color,var(--c-quant));border-color:var(--active-color,var(--c-quant));color:#fff}
 .peek-check-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5}
 .peek-lo-count{font-size:12px;color:var(--text-muted);margin-left:auto;font-family:'JetBrains Mono',monospace}
-@media(max-width:768px){.peek-panel{max-width:100%;max-height:90vh;border-radius:12px}.peek-body{padding:16px}}
+@media(max-width:768px){.peek-panel{max-width:100%;max-height:100vh;height:100vh;border-radius:0;margin:0}.peek-overlay{padding:0}.peek-body{padding:16px}.peek-top{padding:12px 16px}.peek-bottom{padding:12px 16px}.peek-check-btn{flex:1;justify-content:center}}
 
 /* Formula */
 .formula-box{background:var(--formula-bg);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:12px 16px;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-primary);line-height:1.75;overflow-x:auto;white-space:pre-wrap}
@@ -195,7 +195,185 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg-prima
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeIn 0.35s ease forwards}
-@media(max-width:768px){.sidebar{display:none}.main-header{padding:0 16px}.subtopic-tabs-wrapper{padding:0 16px}.content-scroll{padding:20px 16px}}
+
+/* ── Mobile bar (hidden on desktop) ── */
+.mobile-bar{display:none}
+
+/* ── Sidebar overlay backdrop ── */
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:9;opacity:0;transition:opacity 0.25s ease}
+.sidebar-backdrop.open{opacity:1}
+[data-theme="light"] .sidebar-backdrop{background:rgba(0,0,0,0.25)}
+
+/* ══════════════════════════════════════════
+   MOBILE RESPONSIVE — max-width: 768px
+   ══════════════════════════════════════════ */
+@media(max-width:768px){
+  /* Sidebar: hidden by default, slides in as drawer */
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:11;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);width:280px;min-width:280px}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-backdrop{display:block;pointer-events:none}
+  .sidebar-backdrop.open{pointer-events:auto}
+
+  /* Mobile top bar */
+  .mobile-bar{display:flex;align-items:center;gap:10px;padding:0 14px;height:52px;min-height:52px;background:var(--bg-secondary);border-bottom:1px solid var(--border-color);z-index:5;transition:background var(--transition),border-color var(--transition)}
+  .mobile-bar-btn{width:36px;height:36px;border-radius:8px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:all var(--transition);flex-shrink:0}
+  .mobile-bar-btn:active{background:var(--bg-tertiary)}
+  .mobile-bar-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .mobile-bar-title{flex:1;font-family:'DM Serif Display',serif;font-size:16px;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .mobile-bar-back{display:none}
+  .mobile-bar-back.visible{display:flex}
+  .mobile-bar-menu.hidden{display:none}
+  .mobile-bar-progress{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);flex-shrink:0}
+
+  /* Hide desktop header on mobile */
+  .main-header{display:none}
+
+  /* Subtabs: better touch targets */
+  .subtopic-tabs-wrapper{padding:0 10px;-webkit-overflow-scrolling:touch}
+  .subtab{padding:10px 14px;font-size:12px;min-height:40px}
+
+  /* Content */
+  .content-scroll{padding:16px 14px}
+  .content-inner{max-width:100%}
+
+  /* Welcome hero: scale down */
+  .intro-hero{padding:24px 12px 20px}
+  .intro-hero h1{font-size:24px}
+  .intro-hero p{font-size:13px}
+  .stats-row{gap:16px;flex-wrap:wrap}
+  .stat-value{font-size:22px}
+  .stat-label{font-size:10px}
+
+  /* Welcome grid: single column */
+  .welcome-grid{grid-template-columns:1fr;gap:10px;margin-top:16px}
+  .welcome-card{padding:16px}
+  .wc-title{font-size:15px}
+
+  /* LO bento grid: single column */
+  .lo-list{grid-template-columns:1fr;gap:10px}
+  .lo-title{font-size:13px}
+  .lo-summary{font-size:11px}
+
+  /* Section heading */
+  .section-heading{font-size:17px}
+
+  /* Analogy box */
+  .analogy-box{padding:12px 14px;margin:12px 0}
+  .analogy-text{font-size:12px}
+
+  /* Quick review */
+  .quick-review-box{padding:14px 16px}
+  .qr-bullets li{font-size:12px}
+
+  /* Formula box */
+  .formula-box{font-size:11px;padding:10px 12px}
+}
+/* ══ Flashcards ══ */
+.fc-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,#6366F1,#8B5CF6);color:#fff;border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;transition:all var(--transition);width:100%;justify-content:center;letter-spacing:0.3px}
+.fc-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(99,102,241,0.35)}
+.fc-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* Flashcard overlay */
+.fc-overlay{position:fixed;inset:0;background:var(--bg-primary);z-index:200;display:none;flex-direction:column;overflow:hidden;transition:opacity 0.2s ease}
+.fc-overlay.open{display:flex}
+
+/* FC Header */
+.fc-header{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary);flex-shrink:0}
+.fc-header-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text-primary);flex:1}
+.fc-header-badge{font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 10px;border-radius:6px;font-weight:500}
+.fc-close{width:36px;height:36px;border-radius:8px;background:var(--bg-tertiary);border:1px solid var(--border-color);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:all var(--transition)}
+.fc-close:hover{border-color:var(--text-muted);color:var(--text-primary)}
+.fc-close svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* FC Deck Selector */
+.fc-deck-view{flex:1;overflow-y:auto;padding:24px}
+.fc-deck-inner{max-width:700px;margin:0 auto}
+.fc-deck-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.fc-stat-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:14px;text-align:center}
+.fc-stat-val{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;color:var(--text-primary)}
+.fc-stat-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-top:4px}
+.fc-deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.fc-deck-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all var(--transition);position:relative;overflow:hidden}
+.fc-deck-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0.7}
+.fc-deck-card:hover{border-color:var(--border-color);transform:translateY(-2px);box-shadow:var(--shadow-card)}
+.fc-deck-name{font-family:'DM Serif Display',serif;font-size:15px;margin-bottom:8px;color:var(--text-primary)}
+.fc-deck-meta{font-size:11px;color:var(--text-muted);display:flex;gap:12px}
+.fc-deck-due{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;margin-top:10px}
+.fc-deck-bar{height:3px;background:var(--bg-tertiary);border-radius:2px;margin-top:8px;overflow:hidden;display:flex}
+.fc-deck-bar span{height:100%}
+
+/* FC Study Session */
+.fc-study{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative}
+.fc-progress-bar{width:100%;max-width:500px;height:4px;background:var(--bg-tertiary);border-radius:2px;margin-bottom:24px;overflow:hidden}
+.fc-progress-fill{height:100%;border-radius:2px;transition:width 0.3s ease}
+.fc-card-wrapper{perspective:1000px;width:100%;max-width:500px;min-height:280px;cursor:pointer}
+.fc-card{position:relative;width:100%;min-height:280px;transform-style:preserve-3d;transition:transform 0.5s ease}
+.fc-card.flipped{transform:rotateY(180deg)}
+.fc-card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);border:1px solid var(--border-color);display:flex;flex-direction:column;overflow:hidden}
+.fc-card-front{background:var(--bg-card)}
+.fc-card-back{background:var(--bg-secondary);transform:rotateY(180deg)}
+.fc-card-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:12px 20px;border-bottom:1px solid var(--border-color);color:var(--text-muted)}
+.fc-card-body{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.fc-card-front .fc-card-body{font-size:15px;line-height:1.65;color:var(--text-primary);font-weight:500}
+.fc-card-back .fc-card-body{font-size:14px;line-height:1.65;color:var(--text-secondary);text-align:left;align-items:flex-start;overflow-y:auto}
+.fc-card-hint{font-size:11px;color:var(--text-muted);padding:8px 20px;text-align:center;border-top:1px solid var(--border-color)}
+.fc-rating{display:flex;gap:8px;margin-top:20px;width:100%;max-width:500px}
+.fc-rating-btn{flex:1;padding:12px 8px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-card);cursor:pointer;text-align:center;transition:all var(--transition);font-family:'DM Sans',sans-serif}
+.fc-rating-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-card)}
+.fc-rating-btn .label{font-size:12px;font-weight:600;display:block}
+.fc-rating-btn .sub{font-size:10px;color:var(--text-muted);margin-top:2px;display:block}
+.fc-rating-btn.again{border-color:#EF444460}.fc-rating-btn.again:hover{background:#EF444415;border-color:#EF4444}
+.fc-rating-btn.hard{border-color:#F59E0B60}.fc-rating-btn.hard:hover{background:#F59E0B15;border-color:#F59E0B}
+.fc-rating-btn.good{border-color:#10B98160}.fc-rating-btn.good:hover{background:#10B98115;border-color:#10B981}
+.fc-rating-btn.easy{border-color:#3B82F660}.fc-rating-btn.easy:hover{background:#3B82F615;border-color:#3B82F6}
+.fc-rating.hidden{display:none}
+.fc-empty{text-align:center;padding:40px 20px;color:var(--text-muted)}
+.fc-empty-icon{font-size:40px;margin-bottom:12px}
+.fc-empty-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text-secondary);margin-bottom:6px}
+.fc-done-btn{margin-top:16px;padding:10px 24px;border-radius:var(--radius-sm);background:var(--bg-tertiary);border:1px solid var(--border-color);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-secondary);font-family:'DM Sans',sans-serif;transition:all var(--transition)}
+.fc-done-btn:hover{border-color:var(--text-muted);color:var(--text-primary)}
+@media(max-width:768px){.fc-header{padding:12px 14px}.fc-header-title{font-size:15px}.fc-deck-view{padding:16px}.fc-deck-stats{grid-template-columns:repeat(2,1fr);gap:8px}.fc-stat-val{font-size:20px}.fc-deck-grid{grid-template-columns:1fr}.fc-study{padding:16px}.fc-card-wrapper{min-height:240px}.fc-card{min-height:240px}.fc-card-front .fc-card-body{font-size:14px}.fc-rating-btn{padding:10px 6px}.fc-rating-btn .label{font-size:11px}}
+
+
+/* ══ Section Stats Cards ══ */
+.section-stats{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.section-stat{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius-sm);background:var(--bg-card);border:1px solid var(--border-color);flex:1;min-width:120px}
+.section-stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-stat-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.section-stat-info{display:flex;flex-direction:column}
+.section-stat-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--text-primary);line-height:1.2}
+.section-stat-label{font-size:10px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-muted)}
+@media(max-width:768px){.section-stats{gap:8px}.section-stat{padding:8px 10px;min-width:100px}.section-stat-val{font-size:16px}.section-stat-icon{width:28px;height:28px}}
+
+.section-stat-btn{cursor:pointer;transition:all var(--transition)}.section-stat-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-card)}
+.section-stat-clickable{cursor:pointer;transition:all var(--transition);position:relative}
+.section-stat-clickable:hover{transform:translateY(-1px);box-shadow:var(--shadow-card)}
+.section-stat-clickable .section-stat-expand{display:inline;font-size:9px;color:var(--text-muted);margin-left:4px;transition:transform var(--transition)}
+.section-stat-detail{display:none;width:100%;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:12px 16px;margin-top:-8px;margin-bottom:14px}
+.section-stat-detail.open{display:block}
+.section-stat-detail-title{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.section-stat-detail-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.section-stat-detail-list li{font-size:12px;color:var(--text-secondary);padding:4px 0 4px 16px;position:relative;line-height:1.45;border-bottom:1px solid var(--border-subtle)}
+.section-stat-detail-list li:last-child{border-bottom:none}
+.section-stat-detail-list li::before{content:'';position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:50%}
+.section-stat-detail-list.formulas li::before{background:var(--active-color,#3B82F6)}
+.section-stat-detail-list.concepts li::before{background:var(--active-color,#3B82F6);opacity:0.5}
+
+/* ══ Interactive Diagrams ══ */
+.lo-diagram{margin:14px 0;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border-color);background:var(--bg-card)}
+.lo-diagram svg{display:block;width:100%;height:auto}
+.lo-diagram text{font-family:'DM Sans',sans-serif}
+.lo-diagram .axis{stroke:var(--text-muted);stroke-width:1;fill:none}
+.lo-diagram .grid{stroke:var(--border-color);stroke-width:0.5;stroke-dasharray:3,3}
+.lo-diagram .label{fill:var(--text-muted);font-size:10px}
+.lo-diagram .title{fill:var(--text-primary);font-size:11px;font-weight:600}
+.lo-diagram-tabs{display:flex;border-bottom:1px solid var(--border-color);background:var(--bg-tertiary)}
+.lo-diagram-tab{padding:8px 14px;font-size:11px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all var(--transition);user-select:none}
+.lo-diagram-tab:hover{color:var(--text-secondary)}
+.lo-diagram-tab.active{color:var(--text-primary);border-bottom-color:var(--active-color,#3B82F6)}
+.lo-diagram-view{display:none;padding:4px}
+.lo-diagram-view.active{display:block}
+
 </style>
 </head>
 <body>
@@ -215,9 +393,25 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg-prima
     <nav class="sidebar-nav" id="sidebarNav"></nav>
     <div class="sidebar-footer">
       <div class="toggle-row"><span>Quick Review Mode</span><div class="toggle-switch" id="toggleReview" onclick="toggleQuickReview()"></div></div>
-    </div>
+    <button class="fc-btn" onclick="openFlashcards()"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Flashcards</button>
+</div>
   </aside>
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileMenu()"></div>
   <div class="main">
+    <div class="mobile-bar" id="mobileBar">
+      <button class="mobile-bar-btn mobile-bar-menu" id="mobileMenuBtn" onclick="openMobileMenu()" title="Menu">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <button class="mobile-bar-btn mobile-bar-back" id="mobileBackBtn" onclick="goHome()" title="Back to overview">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="mobile-bar-title" id="mobileTitle">CFA Level II</span>
+      <span class="mobile-bar-progress" id="mobileProgress"></span>
+      <button class="mobile-bar-btn theme-toggle" onclick="toggleTheme()" title="Theme">
+        <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
     <header class="main-header">
       <div class="topic-title-area">
         <span class="topic-number" id="topicNum" style="display:none;"></span>
@@ -252,6 +446,10 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg-prima
       <span class="peek-lo-count" id="peekLoCount"></span>
     </div>
   </div>
+</div>
+<div class="fc-overlay" id="fcOverlay">
+  <div class="fc-header" id="fcHeaderArea"></div>
+  <div class="fc-deck-view" id="fcBodyArea"></div>
 </div>
 <script>
 const TOPICS=[{id:'quant',num:'01',name:'Quantitative Methods',color:'#3B82F6',dim:'#3B82F620',subtopics:[{id:'multi-reg',name:'Multiple Regression Basics',los:3},{id:'model-fit',name:'Evaluating Model Fit',los:3},{id:'misspec',name:'Model Misspecification',los:4},{id:'extensions',name:'Regression Extensions',los:3},{id:'timeseries',name:'Time-Series Analysis',los:14},{id:'ml',name:'Machine Learning',los:4},{id:'bigdata',name:'Big Data Projects',los:7}]},{id:'econ',num:'02',name:'Economics',color:'#10B981',dim:'#10B98120',subtopics:[{id:'fx',name:'Currency Exchange Rates',los:12},{id:'growth',name:'Economic Growth',los:12}]},{id:'fsa',num:'03',name:'Financial Statement Analysis',color:'#F59E0B',dim:'#F59E0B20',subtopics:[{id:'intercorp',name:'Intercorporate Investments',los:3},{id:'employee-comp',name:'Employee Compensation',los:5},{id:'multinational',name:'Multinational Operations',los:10},{id:'fin-inst',name:'Financial Institutions',los:6},{id:'quality',name:'Quality of Financial Reports',los:13},{id:'integration',name:'Integration of FSA Techniques',los:5}]},{id:'corp',num:'04',name:'Corporate Issuers',color:'#A855F7',dim:'#A855F720',subtopics:[{id:'dividends',name:'Dividends & Share Repurchases',los:14},{id:'esg',name:'ESG Considerations',los:4},{id:'cost-cap',name:'Cost of Capital: Advanced',los:6},{id:'restruct',name:'Corporate Restructurings',los:7}]},{id:'equity',num:'05',name:'Equity Valuation',color:'#EF4444',dim:'#EF444420',subtopics:[{id:'eq-process',name:'Applications & Processes',los:8},{id:'ddm',name:'Discounted Dividend Valuation',los:16},{id:'fcf',name:'Free Cash Flow Valuation',los:13},{id:'multiples',name:'Price & EV Multiples',los:18},{id:'residual',name:'Residual Income Valuation',los:11},{id:'private',name:'Private Company Valuation',los:9}]},{id:'fi',num:'06',name:'Fixed Income',color:'#14B8A6',dim:'#14B8A620',subtopics:[{id:'term-struct',name:'Term Structure & Rates',los:11},{id:'arb-free',name:'Arbitrage-Free Framework',los:9},{id:'embedded',name:'Bonds with Embedded Options',los:17},{id:'credit-models',name:'Credit Analysis Models',los:8},{id:'cds',name:'Credit Default Swaps',los:5}]},{id:'deriv',num:'07',name:'Derivatives',color:'#6366F1',dim:'#6366F120',subtopics:[{id:'forwards',name:'Pricing Forward Commitments',los:7},{id:'options',name:'Valuation of Contingent Claims',los:14}]},{id:'alt',num:'08',name:'Alternative Investments',color:'#F97316',dim:'#F9731620',subtopics:[{id:'commodities',name:'Commodities & Derivatives',los:10},{id:'re-overview',name:'Real Estate Overview',los:5},{id:'re-public',name:'Public Real Estate Securities',los:5},{id:'hedge-funds',name:'Hedge Fund Strategies',los:9}]},{id:'pm',num:'09',name:'Portfolio Management',color:'#64748B',dim:'#64748B20',subtopics:[{id:'econ-markets',name:'Economics & Investment Markets',los:11},{id:'active-mgmt',name:'Active Portfolio Management',los:6},{id:'etf',name:'ETF Mechanics & Applications',los:8},{id:'multifactor',name:'Using Multifactor Models',los:7},{id:'market-risk',name:'Measuring & Managing Market Risk',los:12},{id:'backtest',name:'Backtesting & Simulation',los:8}]},{id:'ethics',num:'10',name:'Ethical & Professional Standards',color:'#EAB308',dim:'#EAB30820',subtopics:[{id:'code',name:'Code of Ethics & Standards',los:2},{id:'guidance',name:'Guidance for Standards I–VII',los:2},{id:'application',name:'Application of Code & Standards',los:2}]}];
@@ -925,16 +1123,50 @@ const totalLOs=TOPICS.reduce((s,t)=>s+t.subtopics.reduce((s2,st)=>s2+st.los,0),0
 
 function toggleTheme(){darkMode=!darkMode;document.documentElement.setAttribute('data-theme',darkMode?'dark':'light');}
 
+// ═══ MOBILE MENU ═══
+function openMobileMenu(){
+  document.querySelector('.sidebar').classList.add('open');
+  document.getElementById('sidebarBackdrop').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMobileMenu(){
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('open');
+  document.body.style.overflow='';
+}
+function renderMobileBar(){
+  const bar=document.getElementById('mobileBar');
+  if(!bar) return;
+  const backBtn=document.getElementById('mobileBackBtn');
+  const menuBtn=document.getElementById('mobileMenuBtn');
+  const titleEl=document.getElementById('mobileTitle');
+  const progEl=document.getElementById('mobileProgress');
+  if(currentTopic===null){
+    backBtn.classList.remove('visible');
+    menuBtn.classList.remove('hidden');
+    titleEl.textContent='CFA Level II';
+    const done=Object.keys(checkedLOs).length;
+    progEl.textContent=done>0?`${done}/${totalLOs}`:'';
+  } else {
+    backBtn.classList.add('visible');
+    menuBtn.classList.add('hidden');
+    const t=TOPICS[currentTopic];
+    titleEl.textContent=t.name;
+    const lc=t.subtopics.reduce((s,st)=>s+st.los,0),ch=countChecked(t);
+    progEl.textContent=`${ch}/${lc}`;
+  }
+}
+
 function renderSidebar(){
   const nav=document.getElementById('sidebarNav');
   let h=`<div class="nav-item ${currentTopic===null?'active':''}" style="--dot-color:#888;--active-dim:#88888815;" onclick="goHome()"><div class="nav-dot" style="background:#888"></div><span class="nav-label">⌂ Overview</span></div>`;
   TOPICS.forEach((t,i)=>{const lc=t.subtopics.reduce((s,st)=>s+st.los,0),ch=countChecked(t);h+=`<div class="nav-item ${currentTopic===i?'active':''}" style="--dot-color:${t.color};--active-dim:${t.dim}" onclick="selectTopic(${i})"><div class="nav-dot"></div><span class="nav-label">${t.name}</span><span class="nav-badge">${ch}/${lc}</span></div>`;});
   nav.innerHTML=h;
 }
-function goHome(){currentTopic=null;currentSubtopic=0;render();}
-function selectTopic(i){currentTopic=i;currentSubtopic=0;render();document.getElementById('contentScroll').scrollTop=0;}
+function goHome(){currentTopic=null;currentSubtopic=0;closeMobileMenu();render();}
+function selectTopic(i){currentTopic=i;currentSubtopic=0;closeMobileMenu();render();document.getElementById('contentScroll').scrollTop=0;}
 function selectSubtopic(i){currentSubtopic=i;renderContent();document.getElementById('contentScroll').scrollTop=0;}
-function render(){renderSidebar();renderHeader();renderSubtabs();renderContent();updateProgress();}
+function render(){renderSidebar();renderHeader();renderMobileBar();renderSubtabs();renderContent();updateProgress();}
 
 function renderHeader(){
   const n=document.getElementById('topicNum'),ti=document.getElementById('topicTitle'),s=document.getElementById('headerStats');
@@ -967,7 +1199,7 @@ function renderRich(el,key,t,st,data){
   const bolt=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
   const bulb=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>`;
   const peekSvg=`<svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>`;
-  let h=`<div class="fade-in"><div class="quick-review-box ${quickReviewOn?'visible':''}"><div class="qr-title">${bolt} QUICK REVIEW — ${st.name}</div><ul class="qr-bullets">${data.quickReview.map(b=>`<li>${b}</li>`).join('')}</ul></div><div class="section-block"><div class="section-heading"><div class="dot" style="background:${t.color}"></div>Learning Outcomes</div><ul class="lo-list">`;
+  let h=`<div class="fade-in"><div class="quick-review-box ${quickReviewOn?'visible':''}"><div class="qr-title">${bolt} QUICK REVIEW — ${st.name}</div><ul class="qr-bullets">${data.quickReview.map(b=>`<li>${b}</li>`).join('')}</ul></div><div class="section-block">${renderSectionStats(t.id, st.id, t.color)}<div class="section-heading"><div class="dot" style="background:${t.color}"></div>Learning Outcomes</div><ul class="lo-list">`;
   data.los.forEach((lo,i)=>{const k=`${t.id}|${st.id}|${i}`,c=checkedLOs[k];const preview=stripHtml(lo.explanation).slice(0,120)+'…';h+=`<li class="lo-item ${c?'checked':''}" onclick="openPeek('${t.id}','${st.id}',${i})"><div class="lo-header"><span class="lo-num">LO ${i+1}</span><div class="lo-check-dot"></div><span class="lo-peek-icon">${peekSvg}</span></div><div class="lo-content"><div class="lo-title">${lo.title}</div><div class="lo-summary">${preview}</div></div></li>`;});
   h+=`</ul></div><div class="analogy-box"><div class="analogy-tag">${bulb} ANALOGY</div><div class="analogy-text">${data.analogy}</div></div></div>`;
   el.innerHTML=h;
@@ -1023,6 +1255,7 @@ function renderPeek(){
 
   document.getElementById('peekBody').innerHTML=`<div class="peek-title">${lo.title}</div><div class="peek-explanation" style="--active-color:${t.color};--active-dim:${t.dim}">${lo.explanation}</div>`;
   document.getElementById('peekBody').scrollTop=0;
+  injectDiagrams(document.getElementById('peekBody'));
 
   document.getElementById('peekPrev').classList.toggle('disabled',peekLoIdx===0);
   document.getElementById('peekNext').classList.toggle('disabled',peekLoIdx>=data.los.length-1);
@@ -1055,6 +1288,809 @@ function toggleLO(key){checkedLOs[key]=!checkedLOs[key];if(!checkedLOs[key])dele
 function toggleQuickReview(){quickReviewOn=!quickReviewOn;document.getElementById('toggleReview').classList.toggle('on',quickReviewOn);document.querySelectorAll('.quick-review-box').forEach(b=>b.classList.toggle('visible',quickReviewOn));}
 function countChecked(topic){return Object.keys(checkedLOs).filter(k=>k.startsWith(topic.id+'|')).length;}
 function updateProgress(){const d=Object.keys(checkedLOs).length,p=totalLOs>0?Math.round(d/totalLOs*100):0;document.getElementById('globalPct').textContent=p+'%';document.getElementById('globalBar').style.width=p+'%';}
+
+// ═══════════════════════════════════════════
+//  FLASHCARDS — DATA + SM-2 ENGINE + UI
+// ═══════════════════════════════════════════
+
+const FLASHCARDS = {
+quant: [
+{q:'What is the formula for a multiple regression model?',a:'Y = b₀ + b₁X₁ + b₂X₂ + … + bₖXₖ + ε. Each bᵢ is the partial slope — the change in Y for a 1-unit change in Xᵢ, holding all other X\'s constant.'},
+{q:'How is Adjusted R² different from R², and why does it matter?',a:'Adjusted R² = 1 − [(1−R²)(n−1)/(n−k−1)]. It penalizes for adding variables. Unlike R², it can decrease when a useless variable is added — making it better for model comparison.'},
+{q:'What are the signs of heteroskedasticity and how do you fix it?',a:'Funnel-shaped residual plot. OLS coefficients stay unbiased but standard errors are wrong → unreliable t-tests. Fix: use White\'s robust standard errors. Detect: Breusch-Pagan or White test.'},
+{q:'What does a Durbin-Watson statistic near 0 indicate?',a:'Positive serial correlation. DW ≈ 2 means no autocorrelation; DW → 0 means strong positive autocorrelation; DW → 4 means negative. Fix: Newey-West standard errors.'},
+{q:'What is the mean-reverting level of an AR(1) model?',a:'Mean-reverting level = b₀/(1−b₁). The series gravitates toward this level when |b₁| < 1. Closer b₁ is to 1 → slower reversion; closer to 0 → faster reversion.'},
+{q:'How does the Dickey-Fuller test work?',a:'Tests H₀: unit root (non-stationary) vs H₁: stationary. Rearranges AR(1) as Δxₜ = b₀ + δxₜ₋₁ + εₜ where δ = b₁−1. Uses special critical values (NOT standard t-tables). Fail to reject → first-difference the series.'},
+{q:'What is the difference between supervised and unsupervised ML?',a:'Supervised: labeled data, learns input→output mapping (prediction). Unsupervised: no labels, discovers structure/patterns (clustering, dimensionality reduction). Deep learning = many-layered neural networks that learn feature hierarchies.'},
+{q:'What are three remedies for overfitting?',a:'(1) Cross-validation (k-fold), (2) Regularization (LASSO/Ridge penalties), (3) Simpler models/fewer parameters. Also: more training data, early stopping, ensemble methods.'},
+],
+econ: [
+{q:'State the Covered Interest Rate Parity formula.',a:'F/S = (1+iₐ)/(1+i_b). Enforced by arbitrage — almost always holds. The forward rate reflects interest rate differentials, not a forecast of future spot rates.'},
+{q:'What is a carry trade and why does it work?',a:'Borrow in low-yield currency, invest in high-yield currency. Profit = interest differential + currency change. Works because UIP frequently fails — high-yield currencies don\'t depreciate as predicted. Risk: sudden, violent reversals ("up the stairs, down the elevator").'},
+{q:'What are the three components of the growth accounting equation?',a:'ΔY/Y = ΔA/A + α(ΔK/K) + (1−α)(ΔL/L). Technology (TFP) + capital contribution + labor contribution. Only technology sustains long-run per-capita growth (capital faces diminishing returns).'},
+{q:'Contrast neoclassical and endogenous growth theory.',a:'Neoclassical (Solow): capital has diminishing returns → steady state → only exogenous tech drives long-run growth → predicts convergence. Endogenous (Romer): R&D creates increasing returns via knowledge spillovers → no diminishing returns → no natural convergence → policy matters.'},
+{q:'What are warning signs of a currency crisis?',a:'Large current account deficit, overvalued real exchange rate, rapid domestic credit growth, declining FX reserves, rising short-term foreign debt, fixed exchange rate inconsistent with domestic policy, banking sector weakness.'},
+{q:'How does expansionary monetary policy typically affect exchange rates?',a:'Lower rates → capital outflows → currency depreciates. But if it boosts growth expectations, may attract equity investment → partial offset. Mundell-Fleming: effect depends on capital mobility and exchange rate regime.'},
+],
+fsa: [
+{q:'Under the equity method, how is the investment carried on the balance sheet?',a:'Investment = cost ± cumulative share of investee\'s net income − dividends received. Income statement shows investor\'s proportional share of investee NI. Used for 20-50% ownership (significant influence).'},
+{q:'What is the key difference between the current rate and temporal translation methods?',a:'Current rate: all assets/liabilities at closing rate, CTA goes to OCI, preserves local ratios. Temporal: monetary items at current rate, non-monetary at historical rate, gain/loss goes to income statement, distorts ratios.'},
+{q:'Explain the CAMELS framework for bank analysis.',a:'C=Capital adequacy (CET1), A=Asset quality (NPL ratio), M=Management quality, E=Earnings (NIM, ROA, efficiency ratio), L=Liquidity (LCR, loan/deposit ratio), S=Sensitivity to market risk. Limitations: backward-looking, management is subjective.'},
+{q:'Why do high-accrual earnings mean-revert faster?',a:'Accruals involve more estimation and judgment than cash flows. The cash component of earnings is more persistent; the accruals component reverses. High accruals ratio (NI−CFO)/Avg Assets signals lower quality and faster mean reversion (Sloan, 1996).'},
+{q:'How does share-based compensation affect financial statements?',a:'IS: expense over vesting period at grant-date fair value → reduces operating income. BS: offset to APIC (equity). CF: expense is non-cash → added back in CFO. EPS: diluted shares increase via treasury stock method. Key: SBC is a real economic cost even though non-cash.'},
+{q:'What is the combined ratio for an insurance company and what does it indicate?',a:'Combined ratio = (claims + expenses) / premiums earned. Below 100% = underwriting profit. Above 100% = underwriting loss (may be offset by investment income). Key metric for property/casualty insurers.'},
+],
+corp: [
+{q:'Compare the three theories of dividend policy.',a:'MM Irrelevance: in perfect markets, dividends don\'t matter. Bird-in-hand: investors prefer certain dividends → higher dividends increase value. Tax preference: capital gains taxed less → investors prefer retention/buybacks → dividends decrease value.'},
+{q:'When is a share repurchase EPS-accretive?',a:'When earnings yield (E/P) > after-tax cost of funds. Cash-financed: almost always accretive (cash earns little). Debt-financed: accretive if E/P > interest rate × (1−t). Also: repurchase at price > BVPS decreases book value per share.'},
+{q:'What is the build-up method for estimating private company cost of equity?',a:'r = r_f + ERP + size premium + specific-company risk premium + illiquidity premium + industry premium. No beta needed. Used when comparable public companies are scarce. Total typically 15-25% vs. 8-12% for public firms.'},
+{q:'What are the three types of corporate restructuring?',a:'(1) Investment actions: acquisitions, JVs, equity investments. (2) Divestments: spin-offs (tax-free, pro rata), carve-outs/IPOs, asset sales. (3) Cost/balance sheet: workforce reduction, facility closure, debt restructuring. Spin-offs tend to outperform empirically.'},
+{q:'How do agency costs relate to dividend policy?',a:'Free cash flow in management\'s hands can be wasted (empire-building, perks). Dividends discipline management by forcing cash distribution — less available for value-destroying projects. Especially relevant for mature firms with stable cash flows and limited growth opportunities.'},
+],
+equity: [
+{q:'Write the Gordon Growth Model and its key assumptions.',a:'V₀ = D₁/(r−g). Assumes: dividends grow at constant rate g forever, r > g, both are constant. Best for mature, stable dividend payers. Extremely sensitive to the r−g spread.'},
+{q:'How do you calculate PVGO and what does it represent?',a:'PVGO = P₀ − (E₁/r). It\'s the portion of stock price attributable to future growth opportunities beyond the no-growth perpetuity value. If PVGO ≈ 0, the stock is priced as a pure earnings stream with no growth premium.'},
+{q:'What is the justified P/B ratio from the residual income model?',a:'Justified P/B = 1 + (ROE−r)/(r−g). If ROE > r → P/B > 1 (creating value). If ROE = r → P/B = 1. If ROE < r → P/B < 1 (destroying value). Shows the direct link between profitability and valuation.'},
+{q:'FCFF from net income — write the formula.',a:'FCFF = NI + NCC + Int(1−t) − FCInv − WCInv. Add back non-cash charges and after-tax interest (to get to all-capital-provider cash flow), subtract capital spending and working capital investment.'},
+{q:'Why is the harmonic mean preferred for averaging P/E multiples?',a:'The harmonic mean = n/Σ(1/Xᵢ). It weights lower multiples more heavily, reducing the upward bias from outliers that afflicts the arithmetic mean. For portfolio-level P/E, it gives the correct market-cap-weighted result.'},
+{q:'What are the three approaches to private company valuation?',a:'Income (DCF, capitalized CF, excess earnings), Market (guideline public companies, guideline transactions), Asset-based (adjusted net asset value). Apply control premium for controlling interest, DLOC + DLOM for minority non-marketable interests.'},
+{q:'What is the sustainable growth rate and its DuPont decomposition?',a:'g = b × ROE (retention rate × return on equity). DuPont: ROE = net margin × asset turnover × financial leverage. Extended: tax burden × interest burden × EBIT margin × turnover × leverage. Shows sources and quality of growth.'},
+],
+fi: [
+{q:'How does bootstrapping extract spot rates from the par curve?',a:'Iteratively: z₁ = 1-year par yield. For 2-year: solve 100 = C/(1+z₁) + (100+C)/(1+z₂)² for z₂. Each step uses previously derived spot rates to isolate the next. Works because par bonds have known prices (100).'},
+{q:'V(callable) vs V(straight) — what is the relationship?',a:'V(callable) = V(straight) − V(call option). The call option belongs to the issuer, so the investor is SHORT the call → callable is always worth less than the straight bond. Higher volatility → higher call value → lower callable price.'},
+{q:'What is OAS and how is it calculated?',a:'Option-Adjusted Spread: the constant spread added to every rate in the binomial tree so that the model price (with option logic) = market price. It isolates the credit spread by removing the option effect. Nominal spread = OAS + option cost.'},
+{q:'In the Merton structural model, what is equity analogous to?',a:'Equity = call option on the firm\'s assets with strike = face value of debt. Default occurs when asset value < debt at maturity. If assets > debt, equity holders keep the residual. If assets < debt, equity is worthless (limited liability).'},
+{q:'What are the components of a CDS and how does it settle?',a:'Protection buyer pays periodic spread (premium leg) to seller. If credit event occurs (bankruptcy, failure to pay, restructuring), seller pays par − recovery (protection leg). Settlement: physical delivery or cash via ISDA auction. Most liquid tenor: 5 years.'},
+{q:'Explain negative convexity in callable bonds.',a:'At low yields, callable bond price is capped near the call price (issuer will call). Price-yield curve bends downward → gains from rate drops are compressed while losses from rate increases are not. Negative convexity is bad for investors: asymmetric downside.'},
+],
+deriv: [
+{q:'What is the no-arbitrage forward price for an equity with discrete dividends?',a:'F₀ = (S₀ − PV(D)) × (1+r)ᵀ. Spot minus present value of dividends, compounded to delivery. If F > this → sell forward, buy spot (cash-and-carry). Forward price reflects carry costs, NOT a forecast of future spot.'},
+{q:'In the binomial model, what is the risk-neutral probability π?',a:'π = (1+r−d)/(u−d). It\'s the probability that makes the expected return on the stock equal to the risk-free rate. Used for pricing: c = [π×cᵤ + (1−π)×c_d]/(1+r). Risk preferences don\'t matter — hence "risk-neutral."'},
+{q:'Write the BSM call formula and interpret its components.',a:'C = S₀N(d₁) − Xe^(−rT)N(d₂). S₀N(d₁) = delta shares (replicating stock position). Xe^(−rT)N(d₂) = borrowed amount. A call IS a leveraged stock position. N(d₂) ≈ risk-neutral probability of finishing in-the-money.'},
+{q:'What are the five option Greeks and what does each measure?',a:'Delta (∂V/∂S): price sensitivity. Gamma (∂²V/∂S²): delta\'s rate of change. Vega (∂V/∂σ): volatility sensitivity. Theta (∂V/∂t): time decay. Rho (∂V/∂r): interest rate sensitivity. All positive for long options except theta (usually negative).'},
+{q:'How is a delta hedge constructed and what is gamma risk?',a:'Short 1 option, hold Δ shares. Must rebalance as Δ changes (dynamic hedging). Gamma risk: if gamma is high (ATM, near expiry), delta changes rapidly between rebalances → large hedging error → costly. Long gamma benefits from big moves; short gamma suffers.'},
+{q:'What is implied volatility and what does the volatility skew indicate?',a:'IV = the σ that makes BSM price equal market price (solved iteratively). Volatility skew: OTM puts typically have higher IV than ATM options — market prices crash risk higher than BSM predicts. VIX = 30-day S&P 500 implied vol ("fear gauge").'},
+],
+alt: [
+{q:'What determines whether a commodity market is in contango or backwardation?',a:'Contango (F>S): storage costs + financing > convenience yield. Futures curve slopes up. Backwardation (F<S): convenience yield dominates. Roll return is negative in contango (buy expensive next-month), positive in backwardation.'},
+{q:'What are the three components of commodity futures total return?',a:'(1) Spot/price return: change in spot price. (2) Roll return: gain/loss from rolling expiring contracts. (3) Collateral return: interest earned on margin/collateral (T-bill rate). Roll return is often the swing factor — negative in persistent contango.'},
+{q:'NAVPS for a REIT — how is it calculated?',a:'NAVPS = (MV of properties + other assets − liabilities) / shares outstanding. Property MV typically estimated via direct capitalization: NOI / cap rate. If REIT trades below NAVPS → discount to NAV → potentially undervalued.'},
+{q:'What is the difference between FFO and AFFO?',a:'FFO = NI + depreciation − gains on sales. AFFO = FFO − recurring capex − straight-line rent adjustment. AFFO is closer to true sustainable distributable cash flow because it deducts maintenance capex that FFO ignores.'},
+{q:'Name the six categories of hedge fund strategies.',a:'(1) Equity-related: long/short, market neutral, short-biased. (2) Event-driven: merger arb, distressed, activist. (3) Relative value: convertible arb, FI arb, vol arb. (4) Opportunistic: global macro, managed futures/CTA. (5) Specialist: sector-focused. (6) Multi-manager: FoF, multi-strategy.'},
+],
+pm: [
+{q:'State the Fundamental Law of Active Management.',a:'E(R_A) = TC × IC × √BR × σ_A. Transfer Coefficient (implementation freedom) × Information Coefficient (forecast skill) × √Breadth (independent bets) × Active Risk (aggressiveness). Optimal IR = TC × IC × √BR.'},
+{q:'What are the three methods for estimating VaR?',a:'(1) Parametric: VaR = z_α × σ × √t × V. Assumes normal distribution. (2) Historical simulation: rank past returns, pick percentile. No distribution assumption. (3) Monte Carlo: simulate thousands of scenarios from a model. Most flexible but model-dependent.'},
+{q:'What is the main limitation of VaR and how does CVaR address it?',a:'VaR only gives the threshold — it doesn\'t tell you how bad losses can be beyond that point. CVaR (Expected Shortfall) = average loss GIVEN that VaR is exceeded. CVaR measures tail severity and is a coherent risk measure (subadditive, unlike VaR).'},
+{q:'How does the ETF creation/redemption process work?',a:'Authorized participants (APs) exchange baskets of underlying securities for ETF shares (creation) or return ETF shares for baskets (redemption). In-kind process keeps price ≈ NAV via arbitrage and provides tax efficiency (no capital gains triggered).'},
+{q:'What is the APT formula?',a:'E(Rᵢ) = r_f + β₁λ₁ + β₂λ₂ + ... + βₖλₖ. βᵢ = sensitivity to factor, λᵢ = risk premium for factor. Unlike CAPM, no market portfolio assumption needed. Arbitrage opportunity exists if a well-diversified portfolio\'s return deviates from this prediction.'},
+{q:'Name four common pitfalls in backtesting.',a:'(1) Survivorship bias: using data with only surviving firms. (2) Look-ahead bias: using info not available at decision time. (3) Data snooping: testing many variations, reporting only the best. (4) Transaction cost underestimation: ignoring spreads, impact, slippage. All cause overstated backtest results.'},
+],
+ethics: [
+{q:'What is the Mosaic Theory and how does it differ from insider trading?',a:'Mosaic Theory: combining individually non-material nonpublic information with public information to form an investment conclusion is legitimate research — NOT insider trading. Trading on material nonpublic information (MNPI) violates Standard II(A). The key distinction is whether each piece of nonpublic info is material on its own.'},
+{q:'What does Standard III(B) Fair Dealing require?',a:'All clients must receive fair treatment — disseminate recommendations simultaneously, don\'t give certain clients early access. "Fair" ≠ identical: larger clients may get more personalized service, but all must receive investment recommendations at the same time.'},
+{q:'When does the "stricter rule" principle apply?',a:'When local law conflicts with the CFA Code & Standards, follow whichever imposes the HIGHER ethical standard. If local law is stricter → follow local law. If local law is less strict than the Code → follow the Code. This applies globally regardless of jurisdiction.'},
+],
+};
+
+// ═══ SM-2 SPACED REPETITION ENGINE ═══
+let fcState = {}; // { 'quant|0': { ef:2.5, interval:1, reps:0, nextReview: Date, lastReview: Date, history:[] }, ... }
+
+function fcGetState(topicId, idx) {
+  const key = topicId + '|' + idx;
+  if (!fcState[key]) {
+    fcState[key] = { ef: 2.5, interval: 0, reps: 0, nextReview: Date.now(), lastReview: null, history: [] };
+  }
+  return fcState[key];
+}
+
+function fcReview(topicId, idx, quality) {
+  // quality: 0=Again, 1=Hard, 2=Good, 3=Easy
+  const s = fcGetState(topicId, idx);
+  s.history.push({ date: Date.now(), q: quality });
+  s.lastReview = Date.now();
+
+  if (quality === 0) {
+    s.reps = 0;
+    s.interval = 1;
+  } else {
+    if (s.reps === 0) s.interval = 1;
+    else if (s.reps === 1) s.interval = 3;
+    else {
+      if (quality === 1) s.interval = Math.max(1, Math.round(s.interval * 1.2));
+      else if (quality === 2) s.interval = Math.round(s.interval * s.ef);
+      else s.interval = Math.round(s.interval * s.ef * 1.3);
+    }
+    s.reps++;
+  }
+
+  // Adjust ease factor
+  if (quality === 0) s.ef = Math.max(1.3, s.ef - 0.2);
+  else if (quality === 1) s.ef = Math.max(1.3, s.ef - 0.15);
+  else if (quality === 3) s.ef = s.ef + 0.15;
+
+  s.nextReview = Date.now() + s.interval * 86400000; // interval in days → ms
+}
+
+function fcGetDueCards(topicId) {
+  const cards = FLASHCARDS[topicId] || [];
+  const now = Date.now();
+  const due = [], notDue = [];
+  cards.forEach((c, i) => {
+    const s = fcGetState(topicId, i);
+    if (s.nextReview <= now) due.push(i);
+    else notDue.push(i);
+  });
+  return { due, notDue, total: cards.length };
+}
+
+function fcGlobalStats() {
+  let totalCards = 0, dueNow = 0, mastered = 0, studied = 0;
+  const now = Date.now();
+  Object.keys(FLASHCARDS).forEach(tid => {
+    const cards = FLASHCARDS[tid];
+    cards.forEach((_, i) => {
+      totalCards++;
+      const s = fcGetState(tid, i);
+      if (s.lastReview) studied++;
+      if (s.nextReview <= now) dueNow++;
+      if (s.interval >= 21) mastered++;
+    });
+  });
+  return { totalCards, dueNow, mastered, studied };
+}
+
+// ═══ FLASHCARD UI ═══
+let fcMode = 'decks'; // 'decks' | 'study'
+let fcCurrentTopic = null;
+let fcQueue = [];
+let fcQueueIdx = 0;
+let fcFlipped = false;
+let fcSessionStats = { correct: 0, total: 0 };
+
+function openFlashcards() {
+  fcMode = 'decks';
+  closeMobileMenu();
+  document.getElementById('fcOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderFC();
+}
+
+function closeFlashcards() {
+  document.getElementById('fcOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function startFCStudy(topicId) {
+  fcCurrentTopic = topicId;
+  const { due } = fcGetDueCards(topicId);
+  fcQueue = due.length > 0 ? [...due] : FLASHCARDS[topicId].map((_, i) => i);
+  fcQueueIdx = 0;
+  fcFlipped = false;
+  fcSessionStats = { correct: 0, total: 0 };
+  fcMode = 'study';
+  renderFC();
+}
+
+function renderFC() {
+  const overlay = document.getElementById('fcOverlay');
+  const header = document.getElementById('fcHeaderArea');
+  const body = document.getElementById('fcBodyArea');
+
+  if (fcMode === 'decks') {
+    header.innerHTML = `<span class="fc-header-title">Flashcard Decks</span><button class="fc-close" onclick="closeFlashcards()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+    const gs = fcGlobalStats();
+    let h = `<div class="fc-deck-inner"><div class="fc-deck-stats">
+      <div class="fc-stat-card"><div class="fc-stat-val">${gs.totalCards}</div><div class="fc-stat-label">Total Cards</div></div>
+      <div class="fc-stat-card"><div class="fc-stat-val" style="color:#EF4444">${gs.dueNow}</div><div class="fc-stat-label">Due Now</div></div>
+      <div class="fc-stat-card"><div class="fc-stat-val" style="color:#10B981">${gs.mastered}</div><div class="fc-stat-label">Mastered</div></div>
+      <div class="fc-stat-card"><div class="fc-stat-val" style="color:#3B82F6">${gs.studied}</div><div class="fc-stat-label">Studied</div></div>
+    </div><div class="fc-deck-grid">`;
+    TOPICS.forEach(t => {
+      const cards = FLASHCARDS[t.id];
+      if (!cards) return;
+      const { due, total } = fcGetDueCards(t.id);
+      let masteredCount = 0;
+      cards.forEach((_, i) => { if (fcGetState(t.id, i).interval >= 21) masteredCount++; });
+      const pctMastered = total > 0 ? Math.round(masteredCount / total * 100) : 0;
+      const pctDue = total > 0 ? Math.round(due.length / total * 100) : 0;
+      const pctLearning = 100 - pctMastered - pctDue;
+      h += `<div class="fc-deck-card" onclick="startFCStudy('${t.id}')" style="--card-color:${t.color}">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${t.color};opacity:0.7"></div>
+        <div class="fc-deck-name">${t.name}</div>
+        <div class="fc-deck-meta"><span>${total} cards</span></div>
+        <div class="fc-deck-due" style="color:${due.length > 0 ? '#EF4444' : '#10B981'}">${due.length > 0 ? due.length + ' due' : 'All caught up ✓'}</div>
+        <div class="fc-deck-bar"><span style="width:${pctMastered}%;background:#10B981"></span><span style="width:${pctLearning}%;background:#3B82F6"></span><span style="width:${pctDue}%;background:#EF4444"></span></div>
+      </div>`;
+    });
+    h += '</div></div>';
+    body.className = 'fc-deck-view';
+    body.innerHTML = h;
+  } else {
+    // Study mode
+    const t = TOPICS.find(x => x.id === fcCurrentTopic);
+    const cards = fcConceptMode ? fcConceptCards : FLASHCARDS[fcCurrentTopic];
+    const sessionLabel = fcConceptMode ? fcConceptLabel : t.name;
+    const closeFn = fcConceptMode ? 'closeFlashcards();fcConceptMode=false;' : 'fcBackToDecks()';
+    const doneFn = fcConceptMode ? 'closeFlashcards();fcConceptMode=false;' : 'fcBackToDecks()';
+    header.innerHTML = `<span class="fc-header-badge" style="background:${t.dim};color:${t.color}">${sessionLabel}</span><span class="fc-header-title">${fcConceptMode?'Concept Cards':'Study Session'}</span><button class="fc-close" onclick="${closeFn}"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+
+    if (fcQueueIdx >= fcQueue.length) {
+      body.className = 'fc-study';
+      body.innerHTML = `<div class="fc-empty"><div class="fc-empty-icon">🎉</div><div class="fc-empty-title">Session Complete!</div><p style="color:var(--text-muted);font-size:13px;margin-top:8px">Reviewed ${fcSessionStats.total} card${fcSessionStats.total!==1?'s':''} · ${fcSessionStats.correct} correct (${fcSessionStats.total>0?Math.round(fcSessionStats.correct/fcSessionStats.total*100):0}%)</p><button class="fc-done-btn" onclick="${doneFn}">Done</button></div>`;
+      return;
+    }
+
+    const ci = fcQueue[fcQueueIdx];
+    const card = cards[ci];
+    const statePrefix = fcConceptMode ? 'c:'+fcCurrentTopic+'|'+fcConceptLabel : fcCurrentTopic;
+    const s = fcGetState(statePrefix, ci);
+    const pct = Math.round((fcQueueIdx / fcQueue.length) * 100);
+
+    body.className = 'fc-study';
+    body.innerHTML = `
+      <div class="fc-progress-bar"><div class="fc-progress-fill" style="width:${pct}%;background:${t.color}"></div></div>
+      <div class="fc-card-wrapper" onclick="fcFlipCard()">
+        <div class="fc-card ${fcFlipped ? 'flipped' : ''}" id="fcCard">
+          <div class="fc-card-face fc-card-front">
+            <div class="fc-card-label" style="color:${t.color}">${fcConceptMode?'Concept':'Question'} · Card ${fcQueueIdx+1}/${fcQueue.length}</div>
+            <div class="fc-card-body">${card.q}</div>
+            <div class="fc-card-hint">Tap to reveal answer</div>
+          </div>
+          <div class="fc-card-face fc-card-back">
+            <div class="fc-card-label" style="color:${t.color}">Answer</div>
+            <div class="fc-card-body">${card.a}</div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-rating ${fcFlipped ? '' : 'hidden'}" id="fcRating">
+        <button class="fc-rating-btn again" onclick="fcRate(0)"><span class="label" style="color:#EF4444">Again</span><span class="sub">&lt;1 min</span></button>
+        <button class="fc-rating-btn hard" onclick="fcRate(1)"><span class="label" style="color:#F59E0B">Hard</span><span class="sub">${formatInterval(Math.max(1,Math.round(s.interval*1.2)))}</span></button>
+        <button class="fc-rating-btn good" onclick="fcRate(2)"><span class="label" style="color:#10B981">Good</span><span class="sub">${formatInterval(Math.max(1,Math.round(s.interval*s.ef)))}</span></button>
+        <button class="fc-rating-btn easy" onclick="fcRate(3)"><span class="label" style="color:#3B82F6">Easy</span><span class="sub">${formatInterval(Math.max(1,Math.round(s.interval*s.ef*1.3)))}</span></button>
+      </div>`;
+  }
+}
+
+function fcFlipCard() {
+  fcFlipped = !fcFlipped;
+  const card = document.getElementById('fcCard');
+  if (card) card.classList.toggle('flipped', fcFlipped);
+  const rating = document.getElementById('fcRating');
+  if (rating) rating.classList.toggle('hidden', !fcFlipped);
+}
+
+function fcRate(quality) {
+  const ci = fcQueue[fcQueueIdx];
+  const statePrefix = fcConceptMode ? 'c:'+fcCurrentTopic+'|'+fcConceptLabel : fcCurrentTopic;
+  fcReview(statePrefix, ci, quality);
+  fcSessionStats.total++;
+  if (quality >= 2) fcSessionStats.correct++;
+  if (quality === 0) fcQueue.push(ci);
+  fcQueueIdx++;
+  fcFlipped = false;
+  renderFC();
+}
+
+function fcBackToDecks() {
+  fcMode = 'decks';
+  renderFC();
+}
+
+// ═══ CONCEPT FLASHCARD STUDY (per-section) ═══
+let fcConceptMode = false;
+let fcConceptCards = [];
+let fcConceptLabel = '';
+
+function startConceptStudy(topicId, subId) {
+  const key = topicId + '|' + subId;
+  const stats = SECTION_STATS[key];
+  if (!stats || !stats.conceptList || stats.conceptList.length === 0) return;
+  const t = TOPICS.find(x => x.id === topicId);
+  const st = t ? t.subtopics.find(x => x.id === subId) : null;
+  
+  fcConceptMode = true;
+  fcConceptCards = stats.conceptList;
+  fcConceptLabel = st ? st.name : key;
+  fcCurrentTopic = topicId;
+  fcQueue = fcConceptCards.map((_, i) => i);
+  fcQueueIdx = 0;
+  fcFlipped = false;
+  fcSessionStats = { correct: 0, total: 0 };
+  fcMode = 'study';
+  
+  document.getElementById('fcOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderFC();
+}
+
+// Override card access in study mode when in concept mode
+function fcGetCurrentCard() {
+  if (fcConceptMode && fcConceptCards.length > 0) {
+    return fcConceptCards[fcQueue[fcQueueIdx]];
+  }
+  const cards = FLASHCARDS[fcCurrentTopic];
+  return cards ? cards[fcQueue[fcQueueIdx]] : null;
+}
+
+function fcGetCurrentState() {
+  const prefix = fcConceptMode ? 'c:' + fcCurrentTopic : fcCurrentTopic;
+  const ci = fcQueue[fcQueueIdx];
+  return fcGetState(prefix, ci);
+}
+
+function fcReviewCurrent(quality) {
+  const prefix = fcConceptMode ? 'c:' + fcCurrentTopic : fcCurrentTopic;
+  const ci = fcQueue[fcQueueIdx];
+  fcReview(prefix, ci, quality);
+}
+
+function formatInterval(days) {
+  if (days < 1) return '<1d';
+  if (days === 1) return '1d';
+  if (days < 30) return days + 'd';
+  if (days < 365) return Math.round(days / 30) + 'mo';
+  return Math.round(days / 365 * 10) / 10 + 'yr';
+}
+
+
+
+// ═══ SECTION STATS (formulas, concepts) ═══
+const SECTION_STATS = {
+'quant|multi-reg': {formulas:1,concepts:7,formulaList:['Y = b₀ + b₁X₁ + b₂X₂ + … + bₖXₖ + ε'],conceptList:[
+{q:'What does "independence of errors" mean in regression?',a:'Errors (residuals) must be uncorrelated with each other. Violation (serial correlation) means one error predicts the next, biasing standard errors downward and inflating t-statistics.'},
+{q:'What is the independence of independent variables assumption?',a:'No independent variable should be a perfect linear combination of others (no perfect multicollinearity). Violation inflates standard errors, making individual coefficients unreliable even if the overall model fits well.'},
+{q:'What does the linearity assumption require in multiple regression?',a:'The relationship between Y and the X variables must be linear in the parameters (bᵢ). Non-linear true relationships produce biased coefficient estimates and show as curved patterns in residual plots.'},
+{q:'How does logistic regression differ from linear regression?',a:'Logistic regression models binary outcomes (0/1) using the log-odds: ln(p/(1−p)) = b₀ + b₁X₁ + … The output is a probability (0 to 1). Coefficients are interpreted as odds ratios: e^(bᵢ) = multiplicative effect on odds per unit change in Xᵢ.'},
+{q:'What defines a multiple linear regression model?',a:'Y = b₀ + b₁X₁ + b₂X₂ + … + bₖXₖ + ε. Each bᵢ measures the partial effect of Xᵢ on Y, holding all other X\'s constant. It extends simple regression to multiple explanatory variables.'},
+{q:'What is homoskedasticity and why does it matter?',a:'Constant variance of residuals across all levels of X. Violation (heteroskedasticity) makes standard errors unreliable → t-tests and confidence intervals become invalid. Detected by Breusch-Pagan or White test; fixed with robust standard errors.'},
+{q:'What does a normal Q-Q plot of residuals show?',a:'Plots residual quantiles against theoretical normal quantiles. Points falling on a straight diagonal line → residuals are normally distributed (assumption met). Deviations (S-curves, fat tails) indicate non-normality, which affects hypothesis test validity in small samples.'}
+]},
+'quant|model-fit': {formulas:4,concepts:6,formulaList:['R² = SSR / SST','Adjusted R² = 1 − [(1−R²)(n−1)/(n−k−1)]','F = MSR / MSE','Partial F = [(SSEᵣ − SSEᵤ)/q] / [SSEᵤ/(n−k−1)]'],conceptList:[
+{q:'What does R² measure in regression?',a:'The proportion of total variance in Y explained by the model: R² = SSR/SST. Ranges from 0 to 1. Always increases when adding variables — even useless ones — which is why adjusted R² is preferred for model comparison.'},
+{q:'How does Adjusted R² improve on R²?',a:'Adjusted R² = 1 − [(1−R²)(n−1)/(n−k−1)]. It penalizes for adding variables that don\'t improve fit — it can decrease if a variable is useless. The only goodness-of-fit metric that accounts for model complexity.'},
+{q:'What does the F-statistic test in regression?',a:'Tests whether the model as a whole is significant: H₀: b₁ = b₂ = … = bₖ = 0. F = MSR/MSE. A significant F (low p-value) means at least one independent variable has genuine explanatory power.'},
+{q:'What is a joint (partial) F-test?',a:'Tests whether a SUBSET of coefficients are simultaneously zero. Compares restricted vs. unrestricted model: F = [(SSE_r − SSE_u)/q] / [SSE_u/(n−k−1)]. Needed because individual t-tests miss correlations between estimators.'},
+{q:'What is the Bayesian Information Criterion (BIC)?',a:'Model selection criterion: BIC = n·ln(SSE/n) + k·ln(n). Lower = better. Penalizes complexity more heavily than AIC, especially for large samples. Useful for comparing non-nested models. Tends to select simpler models than AIC.'},
+{q:'What is the Akaike Information Criterion (AIC)?',a:'Model selection criterion: AIC = n·ln(SSE/n) + 2k. Lower = better. Less severe complexity penalty than BIC. Balances goodness of fit against parsimony. Two models with ΔAIC < 2 are considered equally supported by the data.'}
+]},
+'quant|misspec': {formulas:3,concepts:6,formulaList:['BP χ² = n × R² (from auxiliary regression)','DW ≈ 2(1 − r̂)','VIF = 1 / (1 − R²ⱼ)'],conceptList:[
+{q:'What is the Breusch-Pagan (BP) test?',a:'Tests for heteroskedasticity by regressing squared residuals on the independent variables. BP statistic = n × R² from that auxiliary regression, distributed as χ² with k degrees of freedom. Significant → reject homoskedasticity → use robust standard errors.'},
+{q:'What is heteroskedasticity and why does it matter?',a:'Error variance is not constant across observations. OLS coefficients remain unbiased but standard errors are WRONG → t-tests, F-tests, and confidence intervals become unreliable. Conditional heteroskedasticity (variance related to X) is the problematic form.'},
+{q:'What is serial correlation and how does it affect inference?',a:'Residuals are correlated across observations (common in time-series). Positive serial correlation → standard errors are understated → t-statistics inflated → too many false positives. Detected by Durbin-Watson test (DW ≈ 0 → positive). Fix: Newey-West standard errors.'},
+{q:'How do invalid coefficient estimates arise from misspecification?',a:'Omitted variable bias: leaving out a relevant variable correlated with an included one → the included variable\'s coefficient absorbs the omitted effect, becoming biased. Wrong functional form produces biased estimates of the marginal effects.'},
+{q:'What happens to standard errors when regression assumptions are violated?',a:'Heteroskedasticity: SE can be deflated OR inflated depending on the pattern. Serial correlation (positive): SE are typically deflated → inflated t-stats. Multicollinearity: SE are inflated → deflated t-stats. The direction of bias depends on the specific violation.'},
+{q:'What is multicollinearity and how is it detected?',a:'Two or more independent variables are highly correlated. Coefficients remain unbiased but SE inflate → individually insignificant variables despite significant overall F-test. Detected by VIF = 1/(1−R²ⱼ). VIF > 5 concern, > 10 serious. Fix: drop variable, combine, or use PCA.'}
+]},
+'quant|extensions': {formulas:0,concepts:0},
+'quant|timeseries': {formulas:0,concepts:0},
+'quant|ml': {formulas:0,concepts:0},
+'quant|bigdata': {formulas:0,concepts:0},
+'econ|fx': {formulas:0,concepts:0},
+'econ|growth': {formulas:0,concepts:0},
+'fsa|intercorp': {formulas:0,concepts:0},
+'fsa|employee-comp': {formulas:0,concepts:0},
+'fsa|multinational': {formulas:0,concepts:0},
+'fsa|fin-inst': {formulas:0,concepts:0},
+'fsa|quality': {formulas:0,concepts:0},
+'fsa|integration': {formulas:0,concepts:0},
+'corp|dividends': {formulas:0,concepts:0},
+'corp|esg': {formulas:0,concepts:0},
+'corp|cost-cap': {formulas:0,concepts:0},
+'corp|restruct': {formulas:0,concepts:0},
+'equity|eq-process': {formulas:0,concepts:0},
+'equity|ddm': {formulas:0,concepts:0},
+'equity|fcf': {formulas:0,concepts:0},
+'equity|multiples': {formulas:0,concepts:0},
+'equity|residual': {formulas:0,concepts:0},
+'equity|private': {formulas:0,concepts:0},
+'fi|term-struct': {formulas:0,concepts:0},
+'fi|arb-free': {formulas:0,concepts:0},
+'fi|embedded': {formulas:0,concepts:0},
+'fi|credit-models': {formulas:0,concepts:0},
+'fi|cds': {formulas:0,concepts:0},
+'deriv|forwards': {formulas:0,concepts:0},
+'deriv|options': {formulas:0,concepts:0},
+'alt|commodities': {formulas:0,concepts:0},
+'alt|re-overview': {formulas:0,concepts:0},
+'alt|re-public': {formulas:0,concepts:0},
+'alt|hedge-funds': {formulas:0,concepts:0},
+'pm|econ-markets': {formulas:0,concepts:0},
+'pm|active-mgmt': {formulas:0,concepts:0},
+'pm|etf': {formulas:0,concepts:0},
+'pm|multifactor': {formulas:0,concepts:0},
+'pm|market-risk': {formulas:0,concepts:0},
+'pm|backtest': {formulas:0,concepts:0},
+'ethics|code': {formulas:0,concepts:0},
+'ethics|guidance': {formulas:0,concepts:0},
+'ethics|application': {formulas:0,concepts:0},
+};
+
+function renderSectionStats(topicId, subId, color) {
+  const key = topicId + '|' + subId;
+  const stats = SECTION_STATS[key];
+  if (!stats) return '';
+  const cCount = stats.conceptList ? stats.conceptList.length : stats.concepts;
+  const fCount = stats.formulas;
+  if (fCount === 0 && cCount === 0) return '';
+  const uid = (topicId+subId).replace(/[^a-z]/g,'');
+
+  let h = '<div class="section-stats">';
+  // Formulas card
+  if (fCount > 0) {
+    const clickable = stats.formulaList && stats.formulaList.length > 0;
+    h += `<div class="section-stat ${clickable?'section-stat-clickable':''}" ${clickable?'onclick="toggleStatDetail(\''+uid+'f\')"':''}><div class="section-stat-icon" style="background:${color}15;color:${color}"><svg viewBox="0 0 24 24"><path d="M4 7h6M4 12h8M4 17h6M17 3l-4 9h6l-4 9"/></svg></div><div class="section-stat-info"><div class="section-stat-val">${fCount}</div><div class="section-stat-label">Formulas${clickable?' <span class="section-stat-expand">▼</span>':''}</div></div></div>`;
+  }
+  // Concepts card
+  if (cCount > 0) {
+    const clickable = stats.conceptList && stats.conceptList.length > 0;
+    h += `<div class="section-stat ${clickable?'section-stat-clickable':''}" ${clickable?'onclick="toggleStatDetail(\''+uid+'c\')"':''}><div class="section-stat-icon" style="background:${color}15;color:${color}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div><div class="section-stat-info"><div class="section-stat-val">${cCount}</div><div class="section-stat-label">Key Concepts${clickable?' <span class="section-stat-expand">▼</span>':''}</div></div></div>`;
+  }
+  // Study button
+  if (stats.conceptList && stats.conceptList.length > 0) {
+    h += `<div class="section-stat section-stat-btn" onclick="event.stopPropagation();startConceptStudy('${topicId}','${subId}')"><div class="section-stat-icon" style="background:${color}15;color:${color}"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="section-stat-info"><div class="section-stat-label" style="color:${color};font-weight:600">Study Concepts →</div></div></div>`;
+  }
+  h += '</div>';
+
+  // Formula detail panel
+  if (stats.formulaList && stats.formulaList.length > 0) {
+    h += `<div class="section-stat-detail" id="sd_${uid}f" style="--active-color:${color}"><div class="section-stat-detail-title" style="color:${color}">Formulas</div><ul class="section-stat-detail-list formulas">${stats.formulaList.map(f=>'<li>'+f+'</li>').join('')}</ul></div>`;
+  }
+  // Concept detail panel
+  if (stats.conceptList && stats.conceptList.length > 0) {
+    h += `<div class="section-stat-detail" id="sd_${uid}c" style="--active-color:${color}"><div class="section-stat-detail-title" style="color:${color}">Key Concepts</div><ul class="section-stat-detail-list concepts">${stats.conceptList.map(c=>'<li>'+c.q.replace(/^What is |^What does |^How does |^How do |^What defines |^What happens |^What are |^Explain /i,'').replace(/\?$/,'')+'</li>').join('')}</ul></div>`;
+  }
+  return h;
+}
+
+function toggleStatDetail(id) {
+  const el = document.getElementById('sd_'+id);
+  if (el) el.classList.toggle('open');
+}
+
+// ═══ INTERACTIVE DIAGRAMS ═══
+const DIAGRAMS = {};
+
+// Helper: SVG wrapper
+function svgWrap(w,h,content,viewBox){return `<svg viewBox="0 0 ${viewBox||w+' '+h}" xmlns="http://www.w3.org/2000/svg">${content}</svg>`;}
+
+// ── 1. Residual Plot Patterns (quant|misspec|0) ──
+DIAGRAMS['quant|misspec|0'] = function(){
+  function dots(cx,cy,pattern){
+    let d='';const n=30;
+    for(let i=0;i<n;i++){
+      const x=cx-55+Math.random()*110;
+      let y;
+      if(pattern==='good') y=cy+(Math.random()-0.5)*40;
+      else if(pattern==='funnel') y=cy+(Math.random()-0.5)*(10+Math.abs(x-cx)*0.6);
+      else if(pattern==='curve') y=cy-((x-cx)*(x-cx))*0.008+(Math.random()-0.5)*12;
+      d+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.5" fill="var(--active-color,#3B82F6)" opacity="0.6"/>`;
+    }
+    return d;
+  }
+  const w=460,h=160;
+  let s=`<line x1="20" y1="75" x2="150" y2="75" class="axis"/><line x1="170" y1="75" x2="300" y2="75" class="axis"/><line x1="320" y1="75" x2="450" y2="75" class="axis"/>`;
+  s+=dots(85,75,'good')+dots(235,75,'funnel')+dots(385,75,'curve');
+  s+=`<text x="85" y="148" text-anchor="middle" class="title" fill="#10B981">✓ No Pattern</text>`;
+  s+=`<text x="235" y="148" text-anchor="middle" class="title" fill="#EF4444">✗ Funnel (Heterosk.)</text>`;
+  s+=`<text x="385" y="148" text-anchor="middle" class="title" fill="#EF4444">✗ Curve (Non-linear)</text>`;
+  s+=`<text x="85" y="14" text-anchor="middle" class="label">Assumptions Met</text>`;
+  s+=`<text x="235" y="14" text-anchor="middle" class="label">Heteroskedasticity</text>`;
+  s+=`<text x="385" y="14" text-anchor="middle" class="label">Misspecification</text>`;
+  return `<div class="lo-diagram">${svgWrap(w,h,s,'0 0 460 160')}</div>`;
+};
+
+// ── 2. R² Decomposition (quant|model-fit|0) ──
+DIAGRAMS['quant|model-fit|0'] = function(){
+  const w=440,h=100;
+  let s=`<rect x="20" y="30" width="260" height="40" rx="4" fill="#3B82F6" opacity="0.7"/>`;
+  s+=`<rect x="280" y="30" width="140" height="40" rx="4" fill="#EF4444" opacity="0.5"/>`;
+  s+=`<text x="150" y="55" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">SSR (Explained) — R²</text>`;
+  s+=`<text x="350" y="55" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">SSE (Error)</text>`;
+  s+=`<text x="20" y="22" class="label">SST = SSR + SSE</text>`;
+  s+=`<line x1="20" y1="80" x2="420" y2="80" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="3,3"/>`;
+  s+=`<text x="220" y="95" text-anchor="middle" class="label">R² = SSR/SST = 62% in this example</text>`;
+  return `<div class="lo-diagram">${svgWrap(w,h,s,'0 0 440 100')}</div>`;
+};
+
+// ── 3. Mean Reversion vs Random Walk (quant|timeseries|5) ──
+DIAGRAMS['quant|timeseries|5'] = function(){
+  const w=440,h=180;
+  // Generate paths
+  let mr='M20,90',rw='M20,90';
+  let mrY=90,rwY=90;
+  const mean=90;
+  for(let i=1;i<=40;i++){
+    const x=20+i*10;
+    mrY=mrY+((mean-mrY)*0.15)+(Math.random()-0.5)*16;
+    rwY=rwY+(Math.random()-0.5)*14;
+    mr+=` L${x},${Math.max(20,Math.min(160,mrY)).toFixed(1)}`;
+    rw+=` L${x},${Math.max(20,Math.min(160,rwY)).toFixed(1)}`;
+  }
+  let s=`<line x1="20" y1="90" x2="420" y2="90" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="4,4"/>`;
+  s+=`<text x="425" y="93" class="label" font-size="9">mean</text>`;
+  s+=`<path d="${rw}" fill="none" stroke="#EF4444" stroke-width="2" opacity="0.7"/>`;
+  s+=`<path d="${mr}" fill="none" stroke="#3B82F6" stroke-width="2"/>`;
+  s+=`<circle cx="28" cy="16" r="5" fill="#3B82F6"/><text x="38" y="20" class="label" font-size="10" fill="var(--text-primary)">Mean-Reverting (|b₁|&lt;1)</text>`;
+  s+=`<circle cx="228" cy="16" r="5" fill="#EF4444"/><text x="238" y="20" class="label" font-size="10" fill="var(--text-primary)">Random Walk (b₁=1)</text>`;
+  return `<div class="lo-diagram">${svgWrap(w,h,s,'0 0 450 180')}</div>`;
+};
+
+// ── 4. Yield Curve Theories (fi|term-struct|7) ──
+DIAGRAMS['fi|term-struct|7'] = function(){
+  const id='yc_'+Date.now();
+  return `<div class="lo-diagram"><div class="lo-diagram-tabs" id="${id}_tabs">
+    <div class="lo-diagram-tab active" onclick="switchDiagramTab('${id}',0)">Pure Expectations</div>
+    <div class="lo-diagram-tab" onclick="switchDiagramTab('${id}',1)">Liquidity Preference</div>
+    <div class="lo-diagram-tab" onclick="switchDiagramTab('${id}',2)">Segmented Markets</div>
+  </div>
+  <div class="lo-diagram-view active" id="${id}_0">${svgWrap(440,150,
+    `<line x1="40" y1="130" x2="410" y2="130" class="axis"/><line x1="40" y1="130" x2="40" y2="20" class="axis"/>
+    <text x="225" y="148" text-anchor="middle" class="label">Maturity →</text><text x="14" y="75" class="label" transform="rotate(-90,14,75)">Yield</text>
+    <path d="M50,100 Q150,70 250,55 Q350,45 400,40" fill="none" stroke="#3B82F6" stroke-width="2.5"/>
+    <text x="200" y="25" text-anchor="middle" class="title" fill="#3B82F6">Upward = Rates expected to rise</text>
+    <path d="M50,60 Q150,65 250,80 Q350,95 400,105" fill="none" stroke="#EF4444" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="330" y="120" class="label" fill="#EF4444">Inverted = Rate cuts expected</text>`,'0 0 440 150')}</div>
+  <div class="lo-diagram-view" id="${id}_1">${svgWrap(440,150,
+    `<line x1="40" y1="130" x2="410" y2="130" class="axis"/><line x1="40" y1="130" x2="40" y2="20" class="axis"/>
+    <text x="225" y="148" text-anchor="middle" class="label">Maturity →</text><text x="14" y="75" class="label" transform="rotate(-90,14,75)">Yield</text>
+    <path d="M50,100 Q150,75 250,58 Q350,48 400,42" fill="none" stroke="#10B981" stroke-width="2.5"/>
+    <path d="M50,100 Q150,82 250,72 Q350,65 400,60" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="405" y="38" class="label" fill="#10B981" font-size="9">Observed</text>
+    <text x="405" y="56" class="label" fill="var(--text-muted)" font-size="9">Expected</text>
+    <path d="M250,72 L250,58" stroke="#A855F7" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="265" y="67" class="label" fill="#A855F7" font-size="9">Liquidity premium</text>
+    <defs><marker id="arr" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#A855F7"/></marker></defs>`,'0 0 440 150')}</div>
+  <div class="lo-diagram-view" id="${id}_2">${svgWrap(440,150,
+    `<line x1="40" y1="130" x2="410" y2="130" class="axis"/><line x1="40" y1="130" x2="40" y2="20" class="axis"/>
+    <text x="225" y="148" text-anchor="middle" class="label">Maturity →</text>
+    <rect x="50" y="60" width="80" height="70" rx="4" fill="#3B82F6" opacity="0.15" stroke="#3B82F6" stroke-dasharray="3,3"/>
+    <rect x="170" y="45" width="100" height="85" rx="4" fill="#10B981" opacity="0.15" stroke="#10B981" stroke-dasharray="3,3"/>
+    <rect x="310" y="70" width="90" height="60" rx="4" fill="#F59E0B" opacity="0.15" stroke="#F59E0B" stroke-dasharray="3,3"/>
+    <text x="90" y="50" text-anchor="middle" class="label" fill="#3B82F6">Short</text>
+    <text x="220" y="36" text-anchor="middle" class="label" fill="#10B981">Medium</text>
+    <text x="355" y="62" text-anchor="middle" class="label" fill="#F59E0B">Long</text>
+    <text x="220" y="22" text-anchor="middle" class="title">Each segment driven by its own supply/demand</text>`,'0 0 440 150')}</div></div>`;
+};
+
+// ── 5. Callable/Putable/Straight Bond Price-Yield (fi|embedded|1) ──
+DIAGRAMS['fi|embedded|1'] = function(){
+  const w=440,h=180;
+  let s=`<line x1="40" y1="155" x2="420" y2="155" class="axis"/><line x1="40" y1="155" x2="40" y2="15" class="axis"/>`;
+  s+=`<text x="230" y="175" text-anchor="middle" class="label">Yield →</text><text x="14" y="85" class="label" transform="rotate(-90,14,85)">Price</text>`;
+  // Straight bond: convex downward curve
+  s+=`<path d="M60,25 Q150,45 230,80 Q310,115 400,140" fill="none" stroke="var(--text-muted)" stroke-width="2"/>`;
+  // Callable: flattens/dips at low yields
+  s+=`<path d="M60,55 Q120,58 180,68 Q260,95 340,125 Q380,138 400,142" fill="none" stroke="#EF4444" stroke-width="2.5"/>`;
+  // Putable: floor at high yields
+  s+=`<path d="M60,24 Q150,44 220,70 Q280,90 320,100 Q370,108 400,110" fill="none" stroke="#3B82F6" stroke-width="2.5"/>`;
+  // Call price ceiling
+  s+=`<line x1="55" y1="52" x2="200" y2="52" stroke="#EF4444" stroke-width="1" stroke-dasharray="4,3"/>`;
+  s+=`<text x="205" y="48" class="label" fill="#EF4444" font-size="9">Call price ceiling</text>`;
+  // Put price floor
+  s+=`<line x1="300" y1="108" x2="410" y2="108" stroke="#3B82F6" stroke-width="1" stroke-dasharray="4,3"/>`;
+  s+=`<text x="300" y="103" class="label" fill="#3B82F6" font-size="9">Put price floor</text>`;
+  // Labels
+  s+=`<text x="395" y="135" class="label" fill="var(--text-muted)">Straight</text>`;
+  s+=`<text x="370" y="150" class="label" fill="#EF4444" font-weight="600">Callable</text>`;
+  s+=`<text x="405" y="105" class="label" fill="#3B82F6" font-weight="600">Putable</text>`;
+  s+=`<text x="100" y="42" class="title" fill="#EF4444" font-size="9">Negative convexity zone</text>`;
+  return `<div class="lo-diagram">${svgWrap(w,h,s,'0 0 440 180')}</div>`;
+};
+
+// ── 6. Option Payoff Diagrams (deriv|options|2) ──
+DIAGRAMS['deriv|options|2'] = function(){
+  const id='opt_'+Date.now();
+  function payoff(type){
+    const w=420,h=160;
+    let s=`<line x1="30" y1="90" x2="400" y2="90" class="axis"/><line x1="210" y1="145" x2="210" y2="15" class="axis"/>`;
+    s+=`<text x="400" y="87" class="label" font-size="9">Stock Price</text><text x="215" y="25" class="label" font-size="9">Profit</text>`;
+    s+=`<text x="210" y="155" class="label" font-size="9" text-anchor="middle">X (Strike)</text>`;
+    if(type==='call'){
+      s+=`<path d="M40,120 L210,120 L380,20" fill="none" stroke="#10B981" stroke-width="2.5"/>`;
+      s+=`<path d="M40,120 L210,120 L340,50" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>`;
+      s+=`<circle cx="210" cy="120" r="4" fill="#10B981"/>`;
+      s+=`<text x="300" y="45" class="title" fill="#10B981">Long Call</text>`;
+      s+=`<text x="100" y="115" class="label" fill="var(--text-muted)">Max loss = premium</text>`;
+    } else {
+      s+=`<path d="M40,20 L210,120 L380,120" fill="none" stroke="#EF4444" stroke-width="2.5"/>`;
+      s+=`<circle cx="210" cy="120" r="4" fill="#EF4444"/>`;
+      s+=`<text x="100" y="45" class="title" fill="#EF4444">Long Put</text>`;
+      s+=`<text x="300" y="115" class="label" fill="var(--text-muted)">Max loss = premium</text>`;
+    }
+    return svgWrap(w,h,s,'0 0 420 160');
+  }
+  return `<div class="lo-diagram"><div class="lo-diagram-tabs" id="${id}_tabs">
+    <div class="lo-diagram-tab active" onclick="switchDiagramTab('${id}',0)">Long Call</div>
+    <div class="lo-diagram-tab" onclick="switchDiagramTab('${id}',1)">Long Put</div>
+  </div>
+  <div class="lo-diagram-view active" id="${id}_0">${payoff('call')}</div>
+  <div class="lo-diagram-view" id="${id}_1">${payoff('put')}</div></div>`;
+};
+
+// ── 7. Greeks Visualization (deriv|options|10) ──
+DIAGRAMS['deriv|options|10'] = function(){
+  const w=440,h=160;
+  let s=`<line x1="40" y1="140" x2="410" y2="140" class="axis"/><line x1="220" y1="145" x2="220" y2="15" class="axis"/>`;
+  s+=`<text x="410" y="138" class="label" font-size="9">S (Stock)</text><text x="220" y="155" class="label" text-anchor="middle" font-size="9">ATM (S=X)</text>`;
+  // Delta S-curve
+  s+=`<path d="M50,130 Q120,128 180,110 Q210,90 220,75 Q240,55 280,38 Q340,25 400,22" fill="none" stroke="#3B82F6" stroke-width="2.5"/>`;
+  // Gamma bell curve
+  s+=`<path d="M50,135 Q120,132 170,120 Q200,95 220,50 Q240,95 260,120 Q310,132 400,135" fill="none" stroke="#A855F7" stroke-width="2" stroke-dasharray="5,3"/>`;
+  s+=`<circle cx="60" cy="18" r="4" fill="#3B82F6"/><text x="70" y="22" class="label" font-size="10" fill="var(--text-primary)" font-weight="500">Delta (0 to 1)</text>`;
+  s+=`<circle cx="220" cy="18" r="4" fill="#A855F7"/><text x="230" y="22" class="label" font-size="10" fill="var(--text-primary)" font-weight="500">Gamma (peaks ATM)</text>`;
+  s+=`<text x="75" y="125" class="label" fill="#3B82F6" font-size="9">Deep OTM: Δ→0</text>`;
+  s+=`<text x="330" y="30" class="label" fill="#3B82F6" font-size="9">Deep ITM: Δ→1</text>`;
+  return `<div class="lo-diagram">${svgWrap(w,h,s,'0 0 440 160')}</div>`;
+};
+
+// ── 8. Business Growth Phases (equity|ddm|10) ──
+DIAGRAMS['equity|ddm|10'] = function(){
+  const w=440,h=150;
+  let s=`<line x1="20" y1="130" x2="430" y2="130" class="axis"/>`;
+  // Growth curve
+  s+=`<path d="M30,110 Q70,85 110,65 Q140,52 160,48" fill="none" stroke="#EF4444" stroke-width="2.5"/>`;
+  s+=`<path d="M160,48 Q200,48 240,52 Q280,60 310,72" fill="none" stroke="#F59E0B" stroke-width="2.5"/>`;
+  s+=`<path d="M310,72 Q340,80 370,85 Q400,88 430,90" fill="none" stroke="#10B981" stroke-width="2.5"/>`;
+  // Phase backgrounds
+  s+=`<rect x="20" y="15" width="150" height="115" rx="4" fill="#EF4444" opacity="0.06"/>`;
+  s+=`<rect x="170" y="15" width="140" height="115" rx="4" fill="#F59E0B" opacity="0.06"/>`;
+  s+=`<rect x="310" y="15" width="120" height="115" rx="4" fill="#10B981" opacity="0.06"/>`;
+  // Labels
+  s+=`<text x="95" y="30" text-anchor="middle" class="title" fill="#EF4444">Growth Phase</text>`;
+  s+=`<text x="95" y="43" text-anchor="middle" class="label" fill="#EF4444">High g, low payout</text>`;
+  s+=`<text x="95" y="55" text-anchor="middle" class="label" fill="#EF4444">ROE >> r</text>`;
+  s+=`<text x="240" y="30" text-anchor="middle" class="title" fill="#F59E0B">Transition</text>`;
+  s+=`<text x="240" y="43" text-anchor="middle" class="label" fill="#F59E0B">g decelerates</text>`;
+  s+=`<text x="240" y="55" text-anchor="middle" class="label" fill="#F59E0B">ROE → r</text>`;
+  s+=`<text x="370" y="30" text-anchor="middle" class="title" fill="#10B981">Maturity</text>`;
+  s+=`<text x="370" y="43" text-anchor="middle" class="label" fill="#10B981">Stable g ≈ GDP</text>`;
+  s+=`<text x="370" y="55" text-anchor="middle" class="label" fill="#10B981">High payout</text>`;
+  s+=`<text x="230" y="145" text-anchor="middle" class="label">Time →</text>`;
+  return `<div class="lo-diagram">${svgWrap(w,h,s,'0 0 440 150')}</div>`;
+};
+
+// ── 9. VaR Distribution (pm|market-risk|0) ──
+DIAGRAMS['pm|market-risk|0'] = function(){
+  const w=440,h=170;
+  // Normal distribution curve
+  let curve='M30,150';
+  for(let x=30;x<=410;x+=2){
+    const t=(x-220)/70;
+    const y=150-130*Math.exp(-t*t/2);
+    curve+=` L${x},${y.toFixed(1)}`;
+  }
+  let s=`<path d="${curve}" fill="none" stroke="var(--text-secondary)" stroke-width="2"/>`;
+  // VaR shading (left tail)
+  let tail='M30,150';
+  for(let x=30;x<=115;x+=2){
+    const t=(x-220)/70;
+    const y=150-130*Math.exp(-t*t/2);
+    tail+=` L${x},${y.toFixed(1)}`;
+  }
+  tail+=' L115,150 Z';
+  s+=`<path d="${tail}" fill="#EF4444" opacity="0.25"/>`;
+  // CVaR darker shade
+  let cvtail='M30,150';
+  for(let x=30;x<=80;x+=2){
+    const t=(x-220)/70;
+    const y=150-130*Math.exp(-t*t/2);
+    cvtail+=` L${x},${y.toFixed(1)}`;
+  }
+  cvtail+=' L80,150 Z';
+  s+=`<path d="${cvtail}" fill="#EF4444" opacity="0.3"/>`;
+  // VaR line
+  s+=`<line x1="115" y1="20" x2="115" y2="150" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+  s+=`<text x="118" y="30" class="title" fill="#EF4444" font-size="10">VaR (5%)</text>`;
+  s+=`<text x="50" y="138" text-anchor="middle" class="label" fill="#EF4444" font-size="9">CVaR</text>`;
+  s+=`<text x="50" y="148" text-anchor="middle" class="label" fill="#EF4444" font-size="8">(avg loss in tail)</text>`;
+  s+=`<text x="220" y="165" text-anchor="middle" class="label">Portfolio Returns →</text>`;
+  s+=`<text x="75" y="165" class="label" fill="var(--text-muted)">Losses</text>`;
+  s+=`<text x="370" y="165" class="label" fill="var(--text-muted)">Gains</text>`;
+  return `<div class="lo-diagram">${svgWrap(w,h,s,'0 0 440 170')}</div>`;
+};
+
+// ── 10. Contango vs Backwardation (alt|commodities|4) ──
+DIAGRAMS['alt|commodities|4'] = function(){
+  const id='ct_'+Date.now();
+  return `<div class="lo-diagram"><div class="lo-diagram-tabs" id="${id}_tabs">
+    <div class="lo-diagram-tab active" onclick="switchDiagramTab('${id}',0)">Contango</div>
+    <div class="lo-diagram-tab" onclick="switchDiagramTab('${id}',1)">Backwardation</div>
+  </div>
+  <div class="lo-diagram-view active" id="${id}_0">${svgWrap(440,140,
+    `<line x1="40" y1="120" x2="410" y2="120" class="axis"/><line x1="40" y1="120" x2="40" y2="15" class="axis"/>
+    <text x="225" y="137" text-anchor="middle" class="label">Contract Month →</text><text x="14" y="65" class="label" transform="rotate(-90,14,65)">Price</text>
+    <path d="M60,90 Q150,70 250,55 Q350,45 400,40" fill="none" stroke="#EF4444" stroke-width="2.5"/>
+    <circle cx="60" cy="90" r="5" fill="#3B82F6"/><text x="70" y="105" class="label" fill="#3B82F6" font-weight="600">Spot</text>
+    <text x="300" y="32" class="title" fill="#EF4444">Futures > Spot</text>
+    <text x="300" y="45" class="label" fill="var(--text-muted)">Storage costs dominate</text>
+    <text x="300" y="57" class="label" fill="#EF4444">Roll return: NEGATIVE ↓</text>`,'0 0 440 140')}</div>
+  <div class="lo-diagram-view" id="${id}_1">${svgWrap(440,140,
+    `<line x1="40" y1="120" x2="410" y2="120" class="axis"/><line x1="40" y1="120" x2="40" y2="15" class="axis"/>
+    <text x="225" y="137" text-anchor="middle" class="label">Contract Month →</text><text x="14" y="65" class="label" transform="rotate(-90,14,65)">Price</text>
+    <path d="M60,40 Q150,55 250,70 Q350,82 400,88" fill="none" stroke="#10B981" stroke-width="2.5"/>
+    <circle cx="60" cy="40" r="5" fill="#3B82F6"/><text x="70" y="32" class="label" fill="#3B82F6" font-weight="600">Spot</text>
+    <text x="300" y="55" class="title" fill="#10B981">Futures < Spot</text>
+    <text x="300" y="68" class="label" fill="var(--text-muted)">Convenience yield dominates</text>
+    <text x="300" y="80" class="label" fill="#10B981">Roll return: POSITIVE ↑</text>`,'0 0 440 140')}</div></div>`;
+};
+
+// ── 11. DuPont Decomposition (equity|ddm|15) ──
+DIAGRAMS['equity|ddm|15'] = function(){
+  const w=440,h=130;
+  let s='';
+  s+=`<rect x="155" y="5" width="130" height="30" rx="6" fill="#3B82F6" opacity="0.15" stroke="#3B82F6"/>`;
+  s+=`<text x="220" y="25" text-anchor="middle" class="title" fill="#3B82F6">ROE</text>`;
+  // Lines down
+  s+=`<line x1="120" y1="35" x2="120" y2="55" stroke="var(--text-muted)" stroke-width="1"/>`;
+  s+=`<line x1="220" y1="35" x2="220" y2="55" stroke="var(--text-muted)" stroke-width="1"/>`;
+  s+=`<line x1="320" y1="35" x2="320" y2="55" stroke="var(--text-muted)" stroke-width="1"/>`;
+  s+=`<line x1="120" y1="35" x2="320" y2="35" stroke="var(--text-muted)" stroke-width="1"/>`;
+  // 3 boxes
+  s+=`<rect x="50" y="55" width="140" height="28" rx="5" fill="#10B981" opacity="0.12" stroke="#10B981"/>`;
+  s+=`<text x="120" y="74" text-anchor="middle" fill="#10B981" font-size="11" font-weight="600">Net Margin</text>`;
+  s+=`<rect x="200" y="55" width="140" height="28" rx="5" fill="#F59E0B" opacity="0.12" stroke="#F59E0B"/>`;
+  s+=`<text x="270" y="74" text-anchor="middle" fill="#F59E0B" font-size="11" font-weight="600">Asset Turnover</text>`;
+  s+=`<rect x="350" y="55" width="80" height="28" rx="5" fill="#A855F7" opacity="0.12" stroke="#A855F7"/>`;
+  s+=`<text x="390" y="74" text-anchor="middle" fill="#A855F7" font-size="11" font-weight="600">Leverage</text>`;
+  // × signs
+  s+=`<text x="195" y="74" text-anchor="middle" fill="var(--text-muted)" font-size="14">×</text>`;
+  s+=`<text x="345" y="74" text-anchor="middle" fill="var(--text-muted)" font-size="14">×</text>`;
+  // Formulas
+  s+=`<text x="120" y="100" text-anchor="middle" class="label">NI / Revenue</text>`;
+  s+=`<text x="270" y="100" text-anchor="middle" class="label">Revenue / Assets</text>`;
+  s+=`<text x="390" y="100" text-anchor="middle" class="label">Assets / Equity</text>`;
+  s+=`<text x="220" y="122" text-anchor="middle" class="label" font-size="10">g = Retention Rate × ROE</text>`;
+  return `<div class="lo-diagram">${svgWrap(w,h,s,'0 0 440 130')}</div>`;
+};
+
+// ── 12. Carry Trade Flow (econ|fx|8) ──
+DIAGRAMS['econ|fx|8'] = function(){
+  const w=440,h=120;
+  let s='';
+  s+=`<rect x="20" y="35" width="120" height="50" rx="8" fill="#3B82F6" opacity="0.12" stroke="#3B82F6"/>`;
+  s+=`<text x="80" y="55" text-anchor="middle" fill="#3B82F6" font-size="11" font-weight="600">Low-Yield</text>`;
+  s+=`<text x="80" y="70" text-anchor="middle" fill="#3B82F6" font-size="10">Currency (JPY)</text>`;
+  s+=`<rect x="310" y="35" width="120" height="50" rx="8" fill="#10B981" opacity="0.12" stroke="#10B981"/>`;
+  s+=`<text x="370" y="55" text-anchor="middle" fill="#10B981" font-size="11" font-weight="600">High-Yield</text>`;
+  s+=`<text x="370" y="70" text-anchor="middle" fill="#10B981" font-size="10">Currency (AUD)</text>`;
+  s+=`<line x1="145" y1="50" x2="305" y2="50" stroke="#EF4444" stroke-width="2" marker-end="url(#arw)"/>`;
+  s+=`<text x="225" y="44" text-anchor="middle" fill="#EF4444" font-size="10" font-weight="600">Borrow</text>`;
+  s+=`<line x1="305" y1="70" x2="145" y2="70" stroke="#10B981" stroke-width="2" marker-end="url(#arw2)"/>`;
+  s+=`<text x="225" y="84" text-anchor="middle" fill="#10B981" font-size="10" font-weight="600">Invest → earn spread</text>`;
+  s+=`<text x="225" y="110" text-anchor="middle" class="label">Profit = (i_high − i_low) + %ΔS. Risk: sudden reversal</text>`;
+  s+=`<defs><marker id="arw" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#EF4444"/></marker>`;
+  s+=`<marker id="arw2" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#10B981"/></marker></defs>`;
+  return `<div class="lo-diagram">${svgWrap(w,h,s,'0 0 440 120')}</div>`;
+};
+
+// Tab switching for tabbed diagrams
+function switchDiagramTab(id, idx) {
+  const tabs = document.querySelectorAll('#'+id+'_tabs .lo-diagram-tab');
+  const views = document.querySelectorAll('[id^="'+id+'_"]');
+  tabs.forEach((t,i) => t.classList.toggle('active', i===idx));
+  views.forEach(v => {
+    if(v.id === id+'_tabs') return;
+    v.classList.toggle('active', v.id === id+'_'+idx);
+  });
+}
+
+// Inject diagrams after peek or content render
+function injectDiagrams(containerEl) {
+  if(!containerEl) return;
+  // Check current context
+  const key = peekTopicId && peekSubId !== null ? `${peekTopicId}|${peekSubId}|${peekLoIdx}` : null;
+  if(key && DIAGRAMS[key]) {
+    const expEl = containerEl.querySelector('.peek-explanation') || containerEl.querySelector('.lo-explanation');
+    if(expEl) {
+      const div = document.createElement('div');
+      div.innerHTML = DIAGRAMS[key]();
+      expEl.appendChild(div);
+    }
+  }
+}
+
 
 render();
 </script>
