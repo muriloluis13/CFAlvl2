@@ -32,7 +32,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg-primary);color:var(--text-primary);overflow:hidden;transition:background var(--transition),color var(--transition);}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
-.app{display:flex;height:100vh}
+.app{display:flex;height:100vh;height:100dvh}
 
 /* Sidebar */
 .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--bg-secondary);border-right:1px solid var(--border-color);display:flex;flex-direction:column;overflow:hidden;z-index:10;transition:background var(--transition),border-color var(--transition)}
@@ -155,7 +155,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg-prima
 .peek-check-btn.is-checked{background:var(--active-color,var(--c-quant));border-color:var(--active-color,var(--c-quant));color:#fff}
 .peek-check-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5}
 .peek-lo-count{font-size:12px;color:var(--text-muted);margin-left:auto;font-family:'JetBrains Mono',monospace}
-@media(max-width:768px){.peek-panel{max-width:100%;max-height:100vh;height:100vh;border-radius:0;margin:0}.peek-overlay{padding:0}.peek-body{padding:16px;overflow-x:hidden}.peek-top{padding:12px 16px}.peek-bottom{padding:12px 16px}.peek-check-btn{flex:1;justify-content:center}}
+@media(max-width:768px){.peek-panel{max-width:100%;max-height:100vh;max-height:100dvh;height:100vh;height:100dvh;border-radius:0;margin:0}.peek-overlay{padding:0}.peek-body{padding:16px}.peek-top{padding:12px 16px;position:sticky;top:0;z-index:2;background:var(--bg-secondary)}.peek-bottom{padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));position:sticky;bottom:0;z-index:2;background:var(--bg-secondary)}.peek-check-btn{flex:1;justify-content:center}.peek-close{width:36px;height:36px}.peek-nav-btn{width:36px;height:36px}}
 
 /* Formula */
 .formula-box{background:var(--formula-bg);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:12px 16px;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-primary);line-height:1.75;overflow-x:auto;white-space:pre-wrap}
@@ -233,7 +233,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg-prima
   .subtab{padding:10px 14px;font-size:12px;min-height:40px}
 
   /* Content */
-  .content-scroll{padding:16px 14px;overflow-x:hidden}
+  .content-scroll{padding:16px 14px;padding-bottom:max(32px,env(safe-area-inset-bottom))}
   .content-inner{max-width:100%}
 
   /* Welcome hero: scale down */
@@ -435,62 +435,11 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg-prima
 .lo-mini-analogy-text{font-size:12px;color:var(--text-secondary);line-height:1.55;font-style:italic}
 
 @media(max-width:768px){
-  /* Compare tables: stack vertically on mobile instead of horizontal scroll */
-  .lo-compare{overflow-x:visible;overflow:visible}
-  .lo-compare-header.lo-compare-4,.lo-compare-row.lo-compare-4,
-  .lo-compare-header.lo-compare-3,.lo-compare-row.lo-compare-3{min-width:0;grid-template-columns:1fr}
-  .lo-compare-header.lo-compare-4,.lo-compare-header.lo-compare-3{display:none}
-  .lo-compare-row.lo-compare-4,.lo-compare-row.lo-compare-3{display:flex;flex-direction:column;gap:0;padding:10px 14px;border-bottom:1px solid var(--border-subtle)}
-  .lo-compare-row.lo-compare-4>div,.lo-compare-row.lo-compare-3>div{padding:3px 0;font-size:12px}
-  .lo-compare-row.lo-compare-4>div:first-child,.lo-compare-row.lo-compare-3>div:first-child{font-size:13px;font-weight:700;color:var(--text-primary);padding-bottom:4px;border-bottom:1px solid var(--border-subtle);margin-bottom:4px}
-  /* 2-column compares stay as grid (narrow enough to work) */
-  .lo-compare-header.lo-compare-2,.lo-compare-row.lo-compare-2{min-width:0;grid-template-columns:1fr 1fr}
-  .lo-compare-header.lo-compare-2>div,.lo-compare-row.lo-compare-2>div{padding:8px 10px;font-size:11px}
-
-  /* Icon cards: single column on small phones, 2 on wider */
-  .lo-icon-cards{grid-template-columns:1fr 1fr;gap:8px}
-  .lo-icon-card{padding:10px}
-  .lo-icon-card-emoji{font-size:20px;margin-bottom:4px}
-  .lo-icon-card-title{font-size:11px}
-  .lo-icon-card-desc{font-size:10.5px}
-
-  /* Steps: tighter spacing */
+  .lo-compare{overflow-x:auto}
+  .lo-compare-header,.lo-compare-row{min-width:400px}
+  .lo-icon-cards{grid-template-columns:repeat(2,1fr);gap:8px}
   .lo-steps{gap:0}
-  .lo-step-body{padding-bottom:12px}
-  .lo-step-title{font-size:12.5px}
-  .lo-step-desc{font-size:11.5px}
-
-  /* Formula highlight: prevent overflow */
-  .formula-highlight{padding:12px}
-  .formula-highlight-body{font-size:10.5px;line-height:1.7;overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .formula-highlight-title{font-size:10px}
-  .formula-highlight-note{font-size:10.5px}
-
-  /* Callouts: slightly tighter */
-  .lo-callout{padding:10px 12px;gap:8px}
-  .lo-callout-icon{font-size:14px}
-  .lo-callout-text{font-size:11.5px}
-
-  /* Mini analogy */
-  .lo-mini-analogy{padding:10px 12px;gap:8px}
-  .lo-mini-analogy-icon{font-size:16px}
-  .lo-mini-analogy-text{font-size:11px}
-
-  /* Peek panel LO content overflow fix */
-  .peek-body .lo-compare{margin:10px 0}
-  .peek-body .lo-icon-cards{margin:10px 0}
-  .peek-body .lo-steps{margin:10px 0}
-  .peek-body .formula-highlight{margin:10px 0}
-  .peek-body .lo-callout{margin:8px 0}
-}
-@media(max-width:420px){
-  /* Very small phones: icon cards go single column */
-  .lo-icon-cards{grid-template-columns:1fr}
-  /* Even tighter formula font */
-  .formula-highlight-body{font-size:10px}
-  /* LO grid single column on very small screens */
-  .lo-list{grid-template-columns:1fr}
-  .welcome-grid{grid-template-columns:1fr}
+  .formula-highlight-body{font-size:11.5px}
 }
 
 </style>
