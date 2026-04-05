@@ -1390,7 +1390,7 @@ else{setTimeout(()=>{if(typeof renderMathInElement==='function')renderMathInElem
 
 function typeset(el){var opts={delimiters:[{left:'$$',right:'$$',display:true}],throwOnError:false};if(typeof renderMathInElement==='function')renderMathInElement(el,opts);else setTimeout(()=>{if(typeof renderMathInElement==='function')renderMathInElement(el,opts);},500);}
 
-function stripHtml(s){return s.replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();}
+function stripHtml(s){return s.replace(/<[^>]*>/g,' ').replace(/\$\$[^$]*\$\$/g,' ').replace(/\$[^$]*\$/g,' ').replace(/\\[a-zA-Z]+\{[^}]*\}/g,' ').replace(/\\[a-zA-Z]+/g,' ').replace(/[{}]/g,'').replace(/\\n/g,' ').replace(/\s+/g,' ').trim();}
 
 function renderRich(el,key,t,st,data){
   const bolt=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
